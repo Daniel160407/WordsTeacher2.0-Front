@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import '../style/AddWord.scss';
 
 // eslint-disable-next-line react/prop-types
 const AddWord = ({setUpdatedWords}) => {

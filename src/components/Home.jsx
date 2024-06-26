@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import '../style/Home.scss';
 
 // eslint-disable-next-line react/prop-types
 const Home = ({updatedWords}) => {

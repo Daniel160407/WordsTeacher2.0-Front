@@ -1,3 +1,5 @@
+import '../style/Navbar.scss';
+
 const Navbar = () => {
     return (
         <ul className="nav nav-tabs">
