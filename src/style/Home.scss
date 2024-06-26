@@ -1,3 +1,7 @@
+h1 {
+    text-align: center;
+}
+
 #words {
     padding: 20px;
     background-color: #333;
@@ -23,6 +27,15 @@
         &:hover {
             background-color: #555;
             border-color: #666;
+        }
+
+        h1 {
+            font-size: xx-large;
+        }
+
+        input[type = 'checkbox'] {
+            transform: scale(1.5);
+            margin-right: 8px;
         }
     }
 
