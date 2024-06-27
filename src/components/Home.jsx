@@ -36,6 +36,9 @@ const Home = ({ updatedWords }) => {
                     setLevel(response.data.level);
                 });
             });
+            Object.values(checkboxesRef.current).forEach(checkbox => {
+                if (checkbox) checkbox.checked = false;
+            });
     };
 
     return (
@@ -45,12 +48,13 @@ const Home = ({ updatedWords }) => {
                 <div className="word" key={word.word + word.meaning}>
                     <h1>{word.word} - {word.meaning}</h1>
                     <input 
+                        className="checkbox"
                         type="checkbox"
                         ref={el => checkboxesRef.current[word.word] = el}
                     />
                 </div>
             ))}
-            <button type="button" className="btn btn-warning" onClick={sendWords}>Send</button>
+            <button id="send-button" type="button" className="btn btn-warning" onClick={sendWords}>Send</button>
         </div>
     );
 }

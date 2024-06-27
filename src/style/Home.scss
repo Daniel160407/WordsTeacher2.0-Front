@@ -42,4 +42,27 @@ h1 {
     &.tab-pane.fade.show.active {
         display: block;
     }
+
+    #send-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        border: none;
+        color: #000000;
+        font-size: 1.2em;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+
+        &:hover {
+            background-color: #d19d00;
+            transform: translateY(-2px);
+        }
+
+        &:active {
+            background-color: #b68800;
+            transform: translateY(0);
+        }
+    }
 }
