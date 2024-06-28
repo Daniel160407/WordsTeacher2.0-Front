@@ -7,6 +7,10 @@ const Home = ({ updatedWords }) => {
     const [words, setWords] = useState([]);
     const [level, setLevel] = useState(0);
     const checkboxesRef = useRef({});
+    const [visibleWord, setVisibleWord] = useState(null);
+    const [editWord, setEditWord] = useState(null);
+    const [editValue, setEditValue] = useState("");
+    const [meaningEditValue, setMeaningEditValue] = useState("");
 
     useEffect(() => {
         axios.get('http://localhost:8080/wordsTeacher/words')
@@ -41,12 +45,94 @@ const Home = ({ updatedWords }) => {
             });
     };
 
+    const handleContextMenu = (e, word) => {
+        e.preventDefault();
+        setVisibleWord(word.word === visibleWord ? null : word.word);
+    };
+
+    const handleEdit = (word) => {
+        setEditWord(word.word);
+        setEditValue(word.word);
+        setMeaningEditValue(word.meaning);
+    };
+
+    const handleEditChange = (e) => {
+        setEditValue(e.target.value);
+    };
+
+    const handleMeaningEditChange = (e) => {
+        setMeaningEditValue(e.target.value);
+    }
+
+    const handleKeyPress = (e, word) => {
+        if(e.target.value === 'Enter'){
+            handleSave(word);
+        }
+    }
+
+    const handleSave = (word) => {
+        const changedWord = {
+            word: editValue,
+            meaning: meaningEditValue
+        }
+
+        const changedWordArray = [word, changedWord];
+        axios.put(`http://localhost:8080/wordsTeacher/words`, changedWordArray)
+            .then(response => {
+                setWords(response.data);
+                setEditWord(null);
+                setEditValue("");
+            });
+    };
+
+    const handleRemove = (word) => {
+        axios.delete(`http://localhost:8080/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}`)
+            .then(response => {
+                setWords(response.data);
+            });
+    };
+
     return (
         <div id="words" className="tab-pane fade show active">
             <h1>Level {level}</h1>
             {words.map(word => (
-                <div className="word" key={word.word + word.meaning}>
-                    <h1>{word.word} - {word.meaning}</h1>
+                <div 
+                    className="word" 
+                    key={word.word + word.meaning} 
+                    onContextMenu={(e) => handleContextMenu(e, word)}
+                >
+                    {editWord === word.word ? (
+                        <div className="editWordContainer">
+                            <input 
+                                type="text" 
+                                className="edit-input" 
+                                value={editValue} 
+                                onChange={handleEditChange} 
+                                onKeyPress={(e) => handleKeyPress(e, word)}
+                            />
+                            <input 
+                                type="text" 
+                                className="edit-input" 
+                                value={meaningEditValue} 
+                                onChange={handleMeaningEditChange} 
+                                onKeyPress={(e) => handleKeyPress(e, word)}
+                            />
+                            <button 
+                                className="save-button btn btn-success" 
+                                onClick={() => handleSave(word)}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    ) : (
+                        <h1>{word.word} - {word.meaning}</h1>
+                    )}
+                    {visibleWord === word.word && (
+                        <div className="editWord">
+                            <img className="edit" src="/svg/pencil.svg" alt="edit" onClick={() => handleEdit(word)} />
+                            <img className="remove" src="/svg/trash.svg" alt="remove" onClick={() => handleRemove(word)} />
+                        </div>
+                    )}
                     <input 
                         className="checkbox"
                         type="checkbox"

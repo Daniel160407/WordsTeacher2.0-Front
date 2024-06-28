@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import '../style/Tests.scss';
 
 const Tests = () => {
@@ -10,65 +10,51 @@ const Tests = () => {
     const [inputs, setInputs] = useState({});
     const [overallFeedback, setOverallFeedback] = useState({});
 
-    useEffect(() => {
-        if (wordsList === 'words') {
-            axios.get('http://localhost:8080/wordsTeacher/words')
-                .then(response => {
-                    const data = response.data;
-                    if (language === 'GEO') {
-                        setWords(data.map(item => item.word));
-                        setMeanings(data.map(item => item.meaning));
-                    } else {
-                        setWords(data.map(item => item.meaning));
-                        setMeanings(data.map(item => item.word));
-                    }
-
-                    setInputs({});
-                    setOverallFeedback({});
-                });
-        } else if (wordsList === 'droppedWords') {
-            axios.get('http://localhost:8080/wordsTeacher/dropper')
-                .then(response => {
-                    const data = response.data;
-                    if (language === 'GEO') {
-                        setWords(data.map(item => item.word));
-                        setMeanings(data.map(item => item.meaning));
-                    } else {
-                        setWords(data.map(item => item.meaning));
-                        setMeanings(data.map(item => item.word));
-                    }
-
-                    setInputs({});
-                    setOverallFeedback({});
-                });
-        } else if (wordsList === 'all') {
-            axios.get('http://localhost:8080/wordsTeacher/words')
-                .then(response1 => {
-                    let data1 = response1.data;
-                    axios.get('http://localhost:8080/wordsTeacher/dropper')
-                        .then(response2 => {
-                            let data2 = response2.data;
-                            let combinedData = [...data1, ...data2];
-
-                            if (language === 'GEO') {
-                                setWords(combinedData.map(item => item.word));
-                                setMeanings(combinedData.map(item => item.meaning));
-                            } else {
-                                setWords(combinedData.map(item => item.meaning));
-                                setMeanings(combinedData.map(item => item.word));
-                            }
-
-                            setInputs({});
-                            setOverallFeedback({});
-                        });
-                });
-
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+    };
+
+    useEffect(() => {
+        const fetchData = async (url) => {
+            const response = await axios.get(url);
+            return response.data;
+        };
+
+        const getData = async () => {
+            let data = [];
+            if (wordsList === 'words') {
+                data = await fetchData('http://localhost:8080/wordsTeacher/words');
+            } else if (wordsList === 'droppedWords') {
+                data = await fetchData('http://localhost:8080/wordsTeacher/dropper');
+            } else if (wordsList === 'all') {
+                const data1 = await fetchData('http://localhost:8080/wordsTeacher/words');
+                const data2 = await fetchData('http://localhost:8080/wordsTeacher/dropper');
+                data = [...data1, ...data2];
+            }
+
+            shuffleArray(data);
+
+            if (language === 'GEO') {
+                setWords(data.map(item => item.word));
+                setMeanings(data.map(item => item.meaning));
+            } else {
+                setWords(data.map(item => item.meaning));
+                setMeanings(data.map(item => item.word));
+            }
+
+            setInputs({});
+            setOverallFeedback({});
+        };
+
+        getData();
     }, [language, wordsList]);
 
     const handleInputChange = (e, index) => {
-        const {value} = e.target;
-        setInputs(prevInputs => ({...prevInputs, [index]: value}));
+        const { value } = e.target;
+        setInputs(prevInputs => ({ ...prevInputs, [index]: value }));
     };
 
     const handleChangeLanguage = (e) => {
@@ -77,7 +63,7 @@ const Tests = () => {
 
     const handleChangeWords = (e) => {
         setWordsList(e.target.value);
-    }
+    };
 
     const checkAnswers = () => {
         const feedback = {};
@@ -104,7 +90,7 @@ const Tests = () => {
                     <option value="all">All</option>
                 </select>
                 {words.map((word, index) => (
-                    <div className="word" key={word}>
+                    <div className="word" key={index}>
                         <h1>{word}</h1>
                         <input
                             type="text"
