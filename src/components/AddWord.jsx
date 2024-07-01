@@ -3,7 +3,7 @@ import { useState } from "react";
 import '../style/AddWord.scss';
 
 // eslint-disable-next-line react/prop-types
-const AddWord = ({setUpdatedWords}) => {
+const AddWord = ({setUpdatedWords, setUpdatedDictionaryWords}) => {
     const [word, setWord] = useState('');
     const [meaning, setMeaning] = useState('');
 
@@ -20,6 +20,11 @@ const AddWord = ({setUpdatedWords}) => {
                 setUpdatedWords(response.data);
                 setWord('');
                 setMeaning('');
+            });
+        
+        axios.post('http://localhost:8080/wordsTeacher/dictionary', newWord)
+            .then(response => {
+                setUpdatedDictionaryWords(response.data);
             });
     }
 

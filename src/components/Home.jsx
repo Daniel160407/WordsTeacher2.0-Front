@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import '../style/Home.scss';
 
 // eslint-disable-next-line react/prop-types
-const Home = ({ updatedWords }) => {
+const Home = ({ updatedWords, setUpdatedDictionaryWords }) => {
     const [words, setWords] = useState([]);
     const [level, setLevel] = useState(0);
     const checkboxesRef = useRef({});
@@ -82,6 +82,11 @@ const Home = ({ updatedWords }) => {
                 setWords(response.data);
                 setEditWord(null);
                 setEditValue("");
+
+                axios.put('http://localhost:8080/wordsTeacher/dictionary', changedWordArray)
+                    .then(response => {
+                        setUpdatedDictionaryWords(response.data);
+                    });
             });
     };
 
@@ -89,6 +94,11 @@ const Home = ({ updatedWords }) => {
         axios.delete(`http://localhost:8080/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}`)
             .then(response => {
                 setWords(response.data);
+
+                axios.delete(`http://localhost:8080/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}`)
+                    .then(response => {
+                        setUpdatedDictionaryWords(response.data);
+                    });
             });
     };
 
