@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import '../style/Tests.scss';
 
-const Tests = () => {
+const Tests = ({updatedWords}) => {
     const [language, setLanguage] = useState('GEO');
     const [wordsList, setWordsList] = useState('words');
     const [words, setWords] = useState([]);
@@ -51,6 +51,20 @@ const Tests = () => {
 
         getData();
     }, [language, wordsList]);
+
+    useEffect(() => {
+        if(updatedWords.length > 0){
+            shuffleArray(updatedWords);
+
+            if (language === 'GEO') {
+                setWords(updatedWords.map(item => item.word));
+                setMeanings(updatedWords.map(item => item.meaning));
+            } else {
+                setWords(updatedWords.map(item => item.meaning));
+                setMeanings(updatedWords.map(item => item.word));
+            }
+        }
+    }, [updatedWords]);
 
     const handleInputChange = (e, index) => {
         const { value } = e.target;

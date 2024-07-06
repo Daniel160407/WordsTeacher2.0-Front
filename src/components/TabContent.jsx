@@ -10,9 +10,9 @@ const TabContent = () => {
 
     return (
         <div className="tab-content">
-            <Home updatedWords={updatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords}/>
+            <Home updatedWords={updatedWords} setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords}/>
             <AddWord setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords}/>
-            <Tests/>
+            <Tests updatedWords={updatedWords}/>
             <Dictionary updatedWords={updatedDictionaryWords}/>
         </div>
     );
