@@ -2,7 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import '../style/Tests.scss';
 
-const Tests = ({updatedWords}) => {
+// eslint-disable-next-line react/prop-types
+const Tests = ({ updatedWords }) => {
     const [language, setLanguage] = useState('GEO');
     const [wordsList, setWordsList] = useState('words');
     const [words, setWords] = useState([]);
@@ -11,10 +12,12 @@ const Tests = ({updatedWords}) => {
     const [overallFeedback, setOverallFeedback] = useState({});
 
     const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
         }
+        return newArray;
     };
 
     useEffect(() => {
@@ -26,23 +29,26 @@ const Tests = ({updatedWords}) => {
         const getData = async () => {
             let data = [];
             if (wordsList === 'words') {
-                data = await fetchData('http://localhost:8080/wordsTeacher/words');
+                data = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=word`);
+            } else if(wordsList === 'difficult') {
+                data = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=difficult`);
             } else if (wordsList === 'droppedWords') {
                 data = await fetchData('http://localhost:8080/wordsTeacher/dropper');
             } else if (wordsList === 'all') {
-                const data1 = await fetchData('http://localhost:8080/wordsTeacher/words');
-                const data2 = await fetchData('http://localhost:8080/wordsTeacher/dropper');
-                data = [...data1, ...data2];
+                const data1 = await fetchData('http://localhost:8080/wordsTeacher/words?wordstype=word');
+                const data2 = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=difficult`);
+                const data3 = await fetchData('http://localhost:8080/wordsTeacher/dropper');
+                data = [...data1, ...data2, ...data3];
             }
 
-            shuffleArray(data);
+            const shuffledData = shuffleArray(data);
 
             if (language === 'GEO') {
-                setWords(data.map(item => item.word));
-                setMeanings(data.map(item => item.meaning));
+                setWords(shuffledData.map(item => item.word));
+                setMeanings(shuffledData.map(item => item.meaning));
             } else {
-                setWords(data.map(item => item.meaning));
-                setMeanings(data.map(item => item.word));
+                setWords(shuffledData.map(item => item.meaning));
+                setMeanings(shuffledData.map(item => item.word));
             }
 
             setInputs({});
@@ -53,18 +59,19 @@ const Tests = ({updatedWords}) => {
     }, [language, wordsList]);
 
     useEffect(() => {
-        if(updatedWords.length > 0){
-            shuffleArray(updatedWords);
+        if (updatedWords.length > 0) {
+            const wordsCopy = [...updatedWords];
+            const shuffledWords = shuffleArray(wordsCopy);
 
             if (language === 'GEO') {
-                setWords(updatedWords.map(item => item.word));
-                setMeanings(updatedWords.map(item => item.meaning));
+                setWords(shuffledWords.map(item => item.word));
+                setMeanings(shuffledWords.map(item => item.meaning));
             } else {
-                setWords(updatedWords.map(item => item.meaning));
-                setMeanings(updatedWords.map(item => item.word));
+                setWords(shuffledWords.map(item => item.meaning));
+                setMeanings(shuffledWords.map(item => item.word));
             }
         }
-    }, [updatedWords]);
+    }, [updatedWords, language]);
 
     const handleInputChange = (e, index) => {
         const { value } = e.target;
@@ -94,14 +101,15 @@ const Tests = ({updatedWords}) => {
     return (
         <div id="tests" className="tab-pane fade">
             <div>
-                <select onChange={handleChangeLanguage}>
+                <select onChange={handleChangeLanguage} value={language}>
                     <option value="GEO">GEO</option>
                     <option value="DEU">DEU</option>
                 </select>
-                <select onChange={handleChangeWords}>
+                <select onChange={handleChangeWords} value={wordsList}>
                     <option value="words">Words</option>
                     <option value="droppedWords">Dropped Words</option>
                     <option value="all">All</option>
+                    <option value="difficult">Difficult Verbs</option>
                 </select>
                 {words.map((word, index) => (
                     <div className="word" key={index}>

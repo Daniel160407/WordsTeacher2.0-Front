@@ -11,6 +11,26 @@ h1 {
     margin: 20px auto;
     transition: all 0.3s ease;
 
+      select {
+        width: 200px;
+        max-width: 330px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: #444444;
+        border: 1px solid #555;
+        border-radius: 5px;
+        transition: border-color 0.3s ease;
+        margin-bottom: 10px;
+        cursor: pointer;
+    
+        &:focus {
+          border-color: #444444;
+          outline: none;
+        }
+      }
+
+
     .word {
         background-color: #444;
         border: 1px solid #555;
@@ -48,6 +68,13 @@ h1 {
                 border-color: #888;
                 outline: none;
             }
+        }
+
+        .editSelect {
+            background-color: #fff;
+            color: #000000;
+            margin-top: 10px;
+            margin-right: 10px;
         }
 
         .editWord {

@@ -11,9 +11,11 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
     const [editWord, setEditWord] = useState(null);
     const [editValue, setEditValue] = useState("");
     const [meaningEditValue, setMeaningEditValue] = useState("");
+    const [wordTypeEditValue, setWordTypeEditValue] = useState("");
+    const [wordsType, setWordsType] = useState('word');
 
     useEffect(() => {
-        axios.get('http://localhost:8080/wordsTeacher/words')
+        axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}`)
             .then(response => {
                 setWords(response.data);
             });
@@ -22,7 +24,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
             .then(response => {
                 setLevel(response.data.level);
             });
-    }, []);
+    }, [wordsType]);
 
     useEffect(() => {
         if (updatedWords !== '') {
@@ -54,6 +56,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
         setEditWord(word.word);
         setEditValue(word.word);
         setMeaningEditValue(word.meaning);
+        setWordTypeEditValue(word.wordType);
     };
 
     const handleEditChange = (e) => {
@@ -73,7 +76,8 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
     const handleSave = (word) => {
         const changedWord = {
             word: editValue,
-            meaning: meaningEditValue
+            meaning: meaningEditValue,
+            wordType: wordTypeEditValue
         }
 
         const changedWordArray = [word, changedWord];
@@ -107,6 +111,10 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
     return (
         <div id="words" className="tab-pane fade show active">
             <h1>Level {level}</h1>
+            <select onChange={(e) => setWordsType(e.target.value)}>
+                <option value={'word'}>Words</option>
+                <option value={'difficult'}>Difficult Verbs</option>
+            </select>
             {words.map(word => (
                 <div 
                     className="word" 
@@ -129,6 +137,10 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
                                 onChange={handleMeaningEditChange} 
                                 onKeyPress={(e) => handleKeyPress(e, word)}
                             />
+                            <select className="editSelect" onChange={(e) => setWordTypeEditValue(e.target.value)}>
+                                <option value={'word'}>Words</option>
+                                <option value={'difficult'}>Difficult Verbs</option>
+                            </select>
                             <button 
                                 className="save-button btn btn-success" 
                                 onClick={() => handleSave(word)}
