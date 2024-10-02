@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import '../style/Tests.scss';
 
 // eslint-disable-next-line react/prop-types
@@ -10,6 +10,10 @@ const Tests = ({ updatedWords }) => {
     const [meanings, setMeanings] = useState([]);
     const [inputs, setInputs] = useState({});
     const [overallFeedback, setOverallFeedback] = useState({});
+    const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+    const [answersChecked, setAnswersChecked] = useState(false);
+
+    const resultsRef = useRef(null);
 
     const shuffleArray = (array) => {
         const newArray = [...array];
@@ -30,7 +34,7 @@ const Tests = ({ updatedWords }) => {
             let data = [];
             if (wordsList === 'words') {
                 data = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=word`);
-            } else if(wordsList === 'difficult') {
+            } else if (wordsList === 'difficult') {
                 data = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=difficult`);
             } else if (wordsList === 'droppedWords') {
                 data = await fetchData('http://localhost:8080/wordsTeacher/dropper');
@@ -53,6 +57,8 @@ const Tests = ({ updatedWords }) => {
 
             setInputs({});
             setOverallFeedback({});
+            setCorrectAnswersCount(0);
+            setAnswersChecked(false);
         };
 
         getData();
@@ -88,14 +94,24 @@ const Tests = ({ updatedWords }) => {
 
     const checkAnswers = () => {
         const feedback = {};
+        let correctCount = 0;
+
         words.forEach((word, index) => {
             if (inputs[index] && inputs[index].toLowerCase() === meanings[index].toLowerCase()) {
                 feedback[index] = '✅';
+                correctCount++;
             } else {
                 feedback[index] = `❌ \n Correct: ${meanings[index]}`;
             }
         });
+
         setOverallFeedback(feedback);
+        setCorrectAnswersCount(correctCount);
+        setAnswersChecked(true);
+
+        if (resultsRef.current) {
+            resultsRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     return (
@@ -111,6 +127,13 @@ const Tests = ({ updatedWords }) => {
                     <option value="all">All</option>
                     <option value="difficult">Difficult Verbs</option>
                 </select>
+
+                <div ref={resultsRef}>
+                    {answersChecked && (
+                        <p>Correct Answers: {correctAnswersCount} out of {words.length}</p>
+                    )}
+                </div>
+
                 {words.map((word, index) => (
                     <div className="word" key={index}>
                         <h1>{word}</h1>
