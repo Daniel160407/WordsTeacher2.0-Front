@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import '../style/Tests.scss';
 
-// eslint-disable-next-line react/prop-types
 const Tests = ({ updatedWords }) => {
     const [language, setLanguage] = useState('GEO');
     const [wordsList, setWordsList] = useState('words');
@@ -12,6 +11,7 @@ const Tests = ({ updatedWords }) => {
     const [overallFeedback, setOverallFeedback] = useState({});
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
     const [answersChecked, setAnswersChecked] = useState(false);
+    const [firstLetter, setFirstLetter] = useState('');
 
     const resultsRef = useRef(null);
 
@@ -43,6 +43,9 @@ const Tests = ({ updatedWords }) => {
                 const data2 = await fetchData(`http://localhost:8080/wordsTeacher/words?wordstype=difficult`);
                 const data3 = await fetchData('http://localhost:8080/wordsTeacher/dropper');
                 data = [...data1, ...data2, ...data3];
+            } else if (wordsList === 'dictionary') {
+                const data1 = await fetchData('http://localhost:8080/wordsTeacher/dictionary');
+                data = data1.filter(item => item.word[0].toUpperCase() === firstLetter);
             }
 
             const shuffledData = shuffleArray(data);
@@ -62,7 +65,7 @@ const Tests = ({ updatedWords }) => {
         };
 
         getData();
-    }, [language, wordsList]);
+    }, [language, wordsList, firstLetter]);
 
     useEffect(() => {
         if (updatedWords.length > 0) {
@@ -101,7 +104,7 @@ const Tests = ({ updatedWords }) => {
                 feedback[index] = '✅';
                 correctCount++;
             } else {
-                feedback[index] = `❌ \n Correct: ${meanings[index]}`;
+                feedback[index] = `❌ Correct: ${meanings[index]}`;
             }
         });
 
@@ -121,12 +124,23 @@ const Tests = ({ updatedWords }) => {
                     <option value="GEO">GEO</option>
                     <option value="DEU">DEU</option>
                 </select>
+
                 <select onChange={handleChangeWords} value={wordsList}>
                     <option value="words">Words</option>
                     <option value="droppedWords">Dropped Words</option>
                     <option value="all">All</option>
                     <option value="difficult">Difficult Verbs</option>
+                    <option value="dictionary">Dictionary</option>
                 </select>
+
+                {wordsList === 'dictionary' && (
+                    <select value={firstLetter} onChange={(e) => setFirstLetter(e.target.value)}>
+                        <option value="">Select Letter</option>
+                        {'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'.split('').map(letter => (
+                            <option key={letter} value={letter}>{letter}</option>
+                        ))}
+                    </select>
+                )}
 
                 <div ref={resultsRef}>
                     {answersChecked && (
@@ -149,6 +163,6 @@ const Tests = ({ updatedWords }) => {
             </div>
         </div>
     );
-}
+};
 
 export default Tests;
