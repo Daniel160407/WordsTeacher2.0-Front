@@ -47,7 +47,10 @@ const Dictionary = ({ updatedWords }) => {
     };
 
     const filteredWords = search
-        ? words.filter(word => word.word.toLowerCase().includes(search.toLowerCase()))
+        ? words.filter(word =>
+            word.word.toLowerCase().includes(search.toLowerCase()) ||
+            word.meaning.toLowerCase().includes(search.toLowerCase())
+        )
         : words;
 
     const groupedWords = groupWordsByFirstLetter(filteredWords);
@@ -58,7 +61,7 @@ const Dictionary = ({ updatedWords }) => {
                 className="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search for a word..."
+                placeholder="Search by word or meaning..."
             />
             {Object.keys(groupedWords).sort().map(letter => (
                 <div key={letter} className="dictionary-section">
