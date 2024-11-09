@@ -63,11 +63,14 @@
             color: #f9f9f9;
             margin-bottom: 15px;
             transition: all 0.2s ease;
+            
+            &::placeholder {
+                color: #7f8c8d;
+            }
 
             &:focus {
-                border-color: #f9f9f9;
                 outline: none;
-                box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+                box-shadow: 0 0 8px #4a4a6a;
             }
         }
 

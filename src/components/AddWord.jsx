@@ -32,7 +32,7 @@ const AddWord = ({setUpdatedWords, setUpdatedDictionaryWords}) => {
 
     return (
         <div id="addWords" className="tab-pane fade">
-            <h2>Add new words</h2>
+            <h2>Add New Words</h2>
             <div className="center-box">
                 <form id="wordInputForm" onSubmit={addWord}>
                     <h3>Word:</h3>
@@ -43,7 +43,7 @@ const AddWord = ({setUpdatedWords, setUpdatedDictionaryWords}) => {
                         <option value={'word'}>Word</option>
                         <option value={'difficult'}>Difficult Verb</option>
                     </select>
-                    <button type="submit">Add Word</button>
+                    <button type="submit" className="btn-warning">Add Word</button>
                 </form>
             </div>
         </div>

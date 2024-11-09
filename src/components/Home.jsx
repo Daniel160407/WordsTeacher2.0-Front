@@ -164,7 +164,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
                     />
                 </div>
             ))}
-            <button id="send-button" type="button" className="btn btn-warning" onClick={sendWords}>Send</button>
+            <button id="send-button" type="button" className="btn btn-warning" onClick={sendWords}>Drop</button>
         </div>
     );
 }
