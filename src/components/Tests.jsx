@@ -34,7 +34,8 @@ const Tests = ({ updatedWords }) => {
     const fetchAllData = async () => {
       const urls = {
         words: "http://localhost:8080/wordsTeacher/words?wordstype=word",
-        difficult: "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
+        difficult:
+          "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
         droppedWords: "http://localhost:8080/wordsTeacher/dropper",
         dictionary: "http://localhost:8080/wordsTeacher/dictionary",
       };
@@ -57,11 +58,23 @@ const Tests = ({ updatedWords }) => {
 
     const filteredWords =
       wordsList === "dictionary" && firstLetter
-        ? allWords.dictionary.filter((item) => item.word[0].toUpperCase() === firstLetter)
+        ? allWords.dictionary.filter(
+            (item) => item.word[0].toUpperCase() === firstLetter
+          )
         : allWords[wordsList];
 
-    setWords(filteredWords.map((item) => (language === "GEO" ? item.word : item.meaning)));
-    setMeanings(filteredWords.map((item) => (language === "GEO" ? item.meaning : item.word)));
+    const shuffledWords = shuffleArray(filteredWords);
+
+    setWords(
+      shuffledWords.map((item) =>
+        language === "GEO" ? item.word : item.meaning
+      )
+    );
+    setMeanings(
+      shuffledWords.map((item) =>
+        language === "GEO" ? item.meaning : item.word
+      )
+    );
     setInputs({});
     setOverallFeedback({});
     setCorrectAnswersCount(0);
@@ -71,8 +84,16 @@ const Tests = ({ updatedWords }) => {
   useEffect(() => {
     if (updatedWords.length > 0) {
       const shuffledWords = shuffleArray(updatedWords);
-      setWords(shuffledWords.map((item) => (language === "GEO" ? item.word : item.meaning)));
-      setMeanings(shuffledWords.map((item) => (language === "GEO" ? item.meaning : item.word)));
+      setWords(
+        shuffledWords.map((item) =>
+          language === "GEO" ? item.word : item.meaning
+        )
+      );
+      setMeanings(
+        shuffledWords.map((item) =>
+          language === "GEO" ? item.meaning : item.word
+        )
+      );
     }
   }, [updatedWords, language]);
 
