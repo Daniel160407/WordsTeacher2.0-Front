@@ -5,6 +5,7 @@ import "../style/Tests.scss";
 const Tests = ({ updatedWords }) => {
   const [language, setLanguage] = useState("GEO");
   const [wordsList, setWordsList] = useState("words");
+  const [allWords, setAllWords] = useState({});
   const [words, setWords] = useState([]);
   const [meanings, setMeanings] = useState([]);
   const [inputs, setInputs] = useState({});
@@ -30,74 +31,48 @@ const Tests = ({ updatedWords }) => {
   };
 
   useEffect(() => {
-    const fetchData = async (url) => {
-      const response = await axios.get(url);
-      return response.data;
+    const fetchAllData = async () => {
+      const urls = {
+        words: "http://localhost:8080/wordsTeacher/words?wordstype=word",
+        difficult: "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
+        droppedWords: "http://localhost:8080/wordsTeacher/dropper",
+        dictionary: "http://localhost:8080/wordsTeacher/dictionary",
+      };
+
+      const data = await Promise.all(
+        Object.entries(urls).map(async ([key, url]) => {
+          const response = await axios.get(url);
+          return { [key]: shuffleArray(response.data) };
+        })
+      );
+
+      setAllWords(Object.assign({}, ...data));
     };
 
-    const getData = async () => {
-      let data = [];
-      if (wordsList === "words") {
-        data = await fetchData(
-          `http://localhost:8080/wordsTeacher/words?wordstype=word`
-        );
-      } else if (wordsList === "difficult") {
-        data = await fetchData(
-          `http://localhost:8080/wordsTeacher/words?wordstype=difficult`
-        );
-      } else if (wordsList === "droppedWords") {
-        data = await fetchData("http://localhost:8080/wordsTeacher/dropper");
-      } else if (wordsList === "all") {
-        const data1 = await fetchData(
-          "http://localhost:8080/wordsTeacher/words?wordstype=word"
-        );
-        const data2 = await fetchData(
-          `http://localhost:8080/wordsTeacher/words?wordstype=difficult`
-        );
-        const data3 = await fetchData(
-          "http://localhost:8080/wordsTeacher/dropper"
-        );
-        data = [...data1, ...data2, ...data3];
-      } else if (wordsList === "dictionary") {
-        const data1 = await fetchData(
-          "http://localhost:8080/wordsTeacher/dictionary"
-        );
-        data = data1.filter(
-          (item) => item.word[0].toUpperCase() === firstLetter
-        );
-      }
+    fetchAllData();
+  }, []);
 
-      const shuffledData = shuffleArray(data);
+  useEffect(() => {
+    if (!allWords[wordsList]) return;
 
-      if (language === "GEO") {
-        setWords(shuffledData.map((item) => item.word));
-        setMeanings(shuffledData.map((item) => item.meaning));
-      } else {
-        setWords(shuffledData.map((item) => item.meaning));
-        setMeanings(shuffledData.map((item) => item.word));
-      }
+    const filteredWords =
+      wordsList === "dictionary" && firstLetter
+        ? allWords.dictionary.filter((item) => item.word[0].toUpperCase() === firstLetter)
+        : allWords[wordsList];
 
-      setInputs({});
-      setOverallFeedback({});
-      setCorrectAnswersCount(0);
-      setAnswersChecked(false);
-    };
-
-    getData();
-  }, [language, wordsList, firstLetter]);
+    setWords(filteredWords.map((item) => (language === "GEO" ? item.word : item.meaning)));
+    setMeanings(filteredWords.map((item) => (language === "GEO" ? item.meaning : item.word)));
+    setInputs({});
+    setOverallFeedback({});
+    setCorrectAnswersCount(0);
+    setAnswersChecked(false);
+  }, [wordsList, language, firstLetter, allWords]);
 
   useEffect(() => {
     if (updatedWords.length > 0) {
-      const wordsCopy = [...updatedWords];
-      const shuffledWords = shuffleArray(wordsCopy);
-
-      if (language === "GEO") {
-        setWords(shuffledWords.map((item) => item.word));
-        setMeanings(shuffledWords.map((item) => item.meaning));
-      } else {
-        setWords(shuffledWords.map((item) => item.meaning));
-        setMeanings(shuffledWords.map((item) => item.word));
-      }
+      const shuffledWords = shuffleArray(updatedWords);
+      setWords(shuffledWords.map((item) => (language === "GEO" ? item.word : item.meaning)));
+      setMeanings(shuffledWords.map((item) => (language === "GEO" ? item.meaning : item.word)));
     }
   }, [updatedWords, language]);
 
@@ -180,12 +155,12 @@ const Tests = ({ updatedWords }) => {
         </select>
 
         <div className="timer">
-        <label htmlFor="timer">Timer</label>
-        <input
-          id="timer"
-          type="checkbox"
-          onChange={(e) => setTimerChecked(e.target.checked)}
-        />
+          <label htmlFor="timer">Timer</label>
+          <input
+            id="timer"
+            type="checkbox"
+            onChange={(e) => setTimerChecked(e.target.checked)}
+          />
         </div>
 
         {timerChecked && (
@@ -200,12 +175,12 @@ const Tests = ({ updatedWords }) => {
             />
 
             <div className="timerControlButtons">
-            <button className="btn-gold" onClick={startTimer}>
-              Start
-            </button>
-            <button className="btn-danger" onClick={stopTimer}>
-              Stop
-            </button>
+              <button className="btn-gold" onClick={startTimer}>
+                Start
+              </button>
+              <button className="btn-danger" onClick={stopTimer}>
+                Stop
+              </button>
             </div>
             <h3 id="time">{timeLeft}</h3>
           </div>
