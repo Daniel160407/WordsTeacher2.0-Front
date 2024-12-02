@@ -12,10 +12,21 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
     const [meaningEditValue, setMeaningEditValue] = useState("");
     const [wordTypeEditValue, setWordTypeEditValue] = useState("");
     const [wordsType, setWordsType] = useState("word");
+    const [advancement, setAdvancement] = useState(null);
+
+    const showAdvancementMessage = (advancementMessage) => {
+        setAdvancement(advancementMessage);
+        
+        setTimeout(() => {
+            setAdvancement(null);
+        }, 5000);
+    };
 
     useEffect(() => {
         axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}`)
-            .then(response => setWords(response.data));
+            .then(response => {
+                setWords(response.data);
+            });
 
         axios.get("http://localhost:8080/wordsTeacher/words/level")
             .then(response => setLevel(response.data.level));
@@ -31,7 +42,9 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
         const checkedWords = words.filter(word => checkboxesRef.current[word.word]?.checked);
         axios.put("http://localhost:8080/wordsTeacher/dropper", checkedWords)
             .then(response => {
-                setWords(response.data);
+                setWords(response.data.wordDtos);
+                setAdvancement(response.data.advancement);
+                showAdvancementMessage(response.data.advancement);
                 axios.get("http://localhost:8080/wordsTeacher/words/level")
                     .then(response => setLevel(response.data.level));
             });
@@ -81,7 +94,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
     };
 
     const handleRemove = (word) => {
-        axios.delete(`http://localhost:8080/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}`)
+        axios.delete(`http://localhost:8080/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}&wordtype=${word.wordType}`)
             .then(response => {
                 setWords(response.data);
                 setUpdatedWords(response.data);
@@ -178,6 +191,12 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
             <button id="send-button" type="button" className="btn btn-warning" onClick={sendWords}>
                 Drop
             </button>
+
+            {advancement && (
+                <div className="advancement-message">
+                    <h3>{advancement}</h3>
+                </div>
+            )}
         </div>
     );
 };
