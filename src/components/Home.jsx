@@ -16,7 +16,10 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
 
     const showAdvancementMessage = (advancementMessage) => {
         setAdvancement(advancementMessage);
-        
+
+        const sound = new Audio("/sounds/advancement_sound.mp3");
+        sound.play();
+
         setTimeout(() => {
             setAdvancement(null);
         }, 5000);

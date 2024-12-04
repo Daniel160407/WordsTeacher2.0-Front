@@ -9,6 +9,11 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     const [wordType, setWordType] = useState('word');
     const [advancement, setAdvancement] = useState(null);
 
+    const playAdvancementSound = () => {
+        const sound = new Audio("/sounds/advancement_sound.mp3");
+        sound.play();
+    };
+
     const addWord = (event) => {
         event.preventDefault();
 
@@ -30,6 +35,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
                 setUpdatedDictionaryWords(response.data.dictionaryDtos);
                 setAdvancement(response.data.advancement ?? null);
                 if (response.data.advancement) {
+                    playAdvancementSound();
                     setTimeout(() => setAdvancement(null), 5000);
                 }
             });
