@@ -34,20 +34,35 @@ const Tests = ({ updatedWords }) => {
     const fetchAllData = async () => {
       const urls = {
         words: "http://localhost:8080/wordsTeacher/words?wordstype=word",
-        difficult:
-          "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
+        difficult: "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
         droppedWords: "http://localhost:8080/wordsTeacher/dropper",
         dictionary: "http://localhost:8080/wordsTeacher/dictionary",
+        all: [
+          "http://localhost:8080/wordsTeacher/words?wordstype=word",
+          "http://localhost:8080/wordsTeacher/dropper"
+        ]
       };
 
-      const data = await Promise.all(
-        Object.entries(urls).map(async ([key, url]) => {
-          const response = await axios.get(url);
-          return { [key]: shuffleArray(response.data) };
-        })
-      );
+      try {
+        const data = await Promise.all(
+          Object.entries(urls).map(async ([key, url]) => {
+            if (Array.isArray(url)) {
+              const responses = await Promise.all(
+                url.map(singleUrl => axios.get(singleUrl))
+              );
+              const combinedData = responses.flatMap(response => response.data);
+              return { [key]: shuffleArray(combinedData) };
+            } else {
+              const response = await axios.get(url);
+              return { [key]: shuffleArray(response.data) };
+            }
+          })
+        );
 
-      setAllWords(Object.assign({}, ...data));
+        setAllWords(Object.assign({}, ...data));
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
     };
 
     fetchAllData();
@@ -175,6 +190,20 @@ const Tests = ({ updatedWords }) => {
           <option value="dictionary">Dictionary</option>
         </select>
 
+        {wordsList === "dictionary" && (
+          <select
+            value={firstLetter}
+            onChange={(e) => setFirstLetter(e.target.value)}
+          >
+            <option value="">Select Letter</option>
+            {"ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ".split("").map((letter) => (
+              <option key={letter} value={letter}>
+                {letter}
+              </option>
+            ))}
+          </select>
+        )}
+
         <div className="timer">
           <label htmlFor="timer">Timer</label>
           <input
@@ -205,20 +234,6 @@ const Tests = ({ updatedWords }) => {
             </div>
             <h3 id="time">{timeLeft}</h3>
           </div>
-        )}
-
-        {wordsList === "dictionary" && (
-          <select
-            value={firstLetter}
-            onChange={(e) => setFirstLetter(e.target.value)}
-          >
-            <option value="">Select Letter</option>
-            {"ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ".split("").map((letter) => (
-              <option key={letter} value={letter}>
-                {letter}
-              </option>
-            ))}
-          </select>
         )}
 
         <div ref={resultsRef}>
