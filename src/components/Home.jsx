@@ -46,8 +46,10 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
         axios.put("http://localhost:8080/wordsTeacher/dropper", checkedWords)
             .then(response => {
                 setWords(response.data.wordDtos);
-                setAdvancement(response.data.advancement);
-                showAdvancementMessage(response.data.advancement);
+                if (response.data.advancement !== null) {
+                    setAdvancement(response.data.advancement);
+                    showAdvancementMessage(response.data.advancement);
+                }
                 axios.get("http://localhost:8080/wordsTeacher/words/level")
                     .then(response => setLevel(response.data.level));
             });
