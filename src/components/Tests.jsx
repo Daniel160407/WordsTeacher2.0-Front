@@ -30,6 +30,23 @@ const Tests = ({ updatedWords }) => {
     return newArray;
   };
 
+  const sortDictionaryWords = (words) => {
+    return words.sort((a, b) => {
+      const normalizeWord = (word) => {
+        const lowerWord = word.toLowerCase();
+        if (lowerWord.startsWith("der ") || lowerWord.startsWith("die ") || lowerWord.startsWith("das ")) {
+          return lowerWord.slice(4);
+        }
+        if (lowerWord.startsWith("sich ")) {
+          return lowerWord.slice(5);
+        }
+        return lowerWord;
+      };
+
+      return normalizeWord(a.word).localeCompare(normalizeWord(b.word));
+    });
+  };
+
   useEffect(() => {
     const fetchAllData = async () => {
       const urls = {
@@ -39,8 +56,8 @@ const Tests = ({ updatedWords }) => {
         dictionary: "http://localhost:8080/wordsTeacher/dictionary?type=word",
         all: [
           "http://localhost:8080/wordsTeacher/words?wordstype=word",
-          "http://localhost:8080/wordsTeacher/dropper"
-        ]
+          "http://localhost:8080/wordsTeacher/dropper",
+        ],
       };
 
       try {
@@ -48,13 +65,20 @@ const Tests = ({ updatedWords }) => {
           Object.entries(urls).map(async ([key, url]) => {
             if (Array.isArray(url)) {
               const responses = await Promise.all(
-                url.map(singleUrl => axios.get(singleUrl))
+                url.map((singleUrl) => axios.get(singleUrl))
               );
-              const combinedData = responses.flatMap(response => response.data);
+              const combinedData = responses.flatMap((response) => response.data);
               return { [key]: shuffleArray(combinedData) };
             } else {
               const response = await axios.get(url);
-              return { [key]: shuffleArray(response.data) };
+              let responseData = response.data;
+
+              // Apply sorting logic for the dictionary
+              if (key === "dictionary") {
+                responseData = sortDictionaryWords(responseData);
+              }
+
+              return { [key]: shuffleArray(responseData) };
             }
           })
         );
@@ -74,7 +98,10 @@ const Tests = ({ updatedWords }) => {
     const filteredWords =
       wordsList === "dictionary" && firstLetter
         ? allWords.dictionary.filter(
-            (item) => item.word[0].toUpperCase() === firstLetter
+            (item) => item.word[0].toUpperCase() === firstLetter || 
+                      (["der", "die", "das", "sich"].some(prefix => 
+                        item.word.toLowerCase().startsWith(prefix + " ") && 
+                        item.word[4]?.toUpperCase() === firstLetter))
           )
         : allWords[wordsList];
 
