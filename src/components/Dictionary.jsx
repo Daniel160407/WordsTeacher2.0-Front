@@ -9,7 +9,7 @@ const Dictionary = ({ updatedWords }) => {
     useEffect(() => {
         const fetchWords = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/wordsTeacher/dictionary');
+                const response = await axios.get('http://localhost:8080/wordsTeacher/dictionary?type=all');
                 setWords(response.data);
             } catch (error) {
                 console.error("There was an error fetching the dictionary data!", error);

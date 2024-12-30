@@ -36,7 +36,7 @@ const Tests = ({ updatedWords }) => {
         words: "http://localhost:8080/wordsTeacher/words?wordstype=word",
         difficult: "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
         droppedWords: "http://localhost:8080/wordsTeacher/dropper",
-        dictionary: "http://localhost:8080/wordsTeacher/dictionary",
+        dictionary: "http://localhost:8080/wordsTeacher/dictionary?type=word",
         all: [
           "http://localhost:8080/wordsTeacher/words?wordstype=word",
           "http://localhost:8080/wordsTeacher/dropper"
