@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
+import Cookies from "js-cookie";
 import "../style/Tests.scss";
 
 const Tests = ({ updatedWords }) => {
@@ -33,8 +34,13 @@ const Tests = ({ updatedWords }) => {
   const sortDictionaryWords = (words) => {
     return words.sort((a, b) => {
       const normalizeWord = (word) => {
+        if (!word) return "";
         const lowerWord = word.toLowerCase();
-        if (lowerWord.startsWith("der ") || lowerWord.startsWith("die ") || lowerWord.startsWith("das ")) {
+        if (
+          lowerWord.startsWith("der ") ||
+          lowerWord.startsWith("die ") ||
+          lowerWord.startsWith("das ")
+        ) {
           return lowerWord.slice(4);
         }
         if (lowerWord.startsWith("sich ")) {
@@ -49,14 +55,20 @@ const Tests = ({ updatedWords }) => {
 
   useEffect(() => {
     const fetchAllData = async () => {
+      const userId = Cookies.get('userId');
+      if (!userId) {
+        console.error("User ID is missing or invalid.");
+        return;
+      }
+
       const urls = {
-        words: "http://localhost:8080/wordsTeacher/words?wordstype=word",
-        difficult: "http://localhost:8080/wordsTeacher/words?wordstype=difficult",
-        droppedWords: "http://localhost:8080/wordsTeacher/dropper",
-        dictionary: "http://localhost:8080/wordsTeacher/dictionary?type=word",
+        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}`,
+        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}`,
+        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}`,
+        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}`,
         all: [
-          "http://localhost:8080/wordsTeacher/words?wordstype=word",
-          "http://localhost:8080/wordsTeacher/dropper",
+          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}`,
+          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}`,
         ],
       };
 
@@ -65,15 +77,30 @@ const Tests = ({ updatedWords }) => {
           Object.entries(urls).map(async ([key, url]) => {
             if (Array.isArray(url)) {
               const responses = await Promise.all(
-                url.map((singleUrl) => axios.get(singleUrl))
+                url.map((singleUrl) =>
+                  axios.get(singleUrl, {
+                    headers: {
+                      Authorization: `${Cookies.get("token") || ""}`,
+                    },
+                  }).catch((error) => {
+                    console.error(`Failed to fetch data from ${singleUrl}:`, error);
+                    return { data: [] };
+                  })
+                )
               );
               const combinedData = responses.flatMap((response) => response.data);
               return { [key]: shuffleArray(combinedData) };
             } else {
-              const response = await axios.get(url);
+              const response = await axios.get(url, {
+                headers: {
+                  Authorization: `${Cookies.get("token") || ""}`,
+                },
+              }).catch((error) => {
+                console.error(`Failed to fetch data from ${url}:`, error);
+                return { data: [] };
+              });
               let responseData = response.data;
 
-              // Apply sorting logic for the dictionary
               if (key === "dictionary") {
                 responseData = sortDictionaryWords(responseData);
               }
@@ -98,10 +125,13 @@ const Tests = ({ updatedWords }) => {
     const filteredWords =
       wordsList === "dictionary" && firstLetter
         ? allWords.dictionary.filter(
-            (item) => item.word[0].toUpperCase() === firstLetter || 
-                      (["der", "die", "das", "sich"].some(prefix => 
-                        item.word.toLowerCase().startsWith(prefix + " ") && 
-                        item.word[4]?.toUpperCase() === firstLetter))
+            (item) =>
+              item.word[0].toUpperCase() === firstLetter ||
+              ["der", "die", "das", "sich"].some(
+                (prefix) =>
+                  item.word.toLowerCase().startsWith(prefix + " ") &&
+                  item.word[4]?.toUpperCase() === firstLetter
+              )
           )
         : allWords[wordsList];
 
@@ -200,6 +230,14 @@ const Tests = ({ updatedWords }) => {
     setTimerRunning(false);
     setTimeLeft(0);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div id="tests" className="tab-pane fade">

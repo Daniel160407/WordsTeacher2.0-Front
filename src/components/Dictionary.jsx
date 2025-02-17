@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import '../style/Dictionary.scss';
 
 const Dictionary = ({ updatedWords }) => {
@@ -9,7 +10,11 @@ const Dictionary = ({ updatedWords }) => {
     useEffect(() => {
         const fetchWords = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/wordsTeacher/dictionary?type=all');
+                const response = await axios.get(`http://localhost:8080/wordsTeacher/dictionary?type=all&userid=${Cookies.get('userId')}`, {
+                        headers: {
+                          Authorization: `${Cookies.get("token") || ""}`,
+                        },
+                      });
                 setWords(response.data);
             } catch (error) {
                 console.error("There was an error fetching the dictionary data!", error);
