@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import "../style/Tests.scss";
 
-const Tests = ({ updatedWords }) => {
+const Tests = ({ updatedWords, newLanguageId }) => {
   const [language, setLanguage] = useState("GEO");
   const [wordsList, setWordsList] = useState("words");
   const [allWords, setAllWords] = useState({});
@@ -56,19 +56,20 @@ const Tests = ({ updatedWords }) => {
   useEffect(() => {
     const fetchAllData = async () => {
       const userId = Cookies.get('userId');
+      const languageId =  newLanguageId !== null ? newLanguageId : Cookies.get('languageId');
       if (!userId) {
         console.error("User ID is missing or invalid.");
         return;
       }
 
       const urls = {
-        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}`,
-        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}`,
-        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}`,
-        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}`,
+        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}`,
+        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}`,
+        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}`,
+        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}`,
         all: [
-          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}`,
-          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}`,
+          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}`,
+          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}`,
         ],
       };
 

@@ -3,14 +3,17 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import '../style/Dictionary.scss';
 
-const Dictionary = ({ updatedWords }) => {
+const Dictionary = ({ updatedWords, langueageId }) => {
     const [words, setWords] = useState([]);
     const [search, setSearch] = useState("");
 
     useEffect(() => {
+        if (langueageId !== null) {
+            Cookies.set('languageId', langueageId, {expires: 7});
+        }
         const fetchWords = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/wordsTeacher/dictionary?type=all&userid=${Cookies.get('userId')}`, {
+                const response = await axios.get(`http://localhost:8080/wordsTeacher/dictionary?type=all&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
                         headers: {
                           Authorization: `${Cookies.get("token") || ""}`,
                         },
@@ -22,7 +25,7 @@ const Dictionary = ({ updatedWords }) => {
         };
 
         fetchWords();
-    }, []);
+    }, [langueageId]);
 
     useEffect(() => {
         if (updatedWords && updatedWords.length > 0) {

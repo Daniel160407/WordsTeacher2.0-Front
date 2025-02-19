@@ -23,6 +23,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
       meaning: meaning,
       wordType: wordType,
       userId: Cookies.get('userId'),
+      languageId: Cookies.get('languageId'),
     };
 
     axios

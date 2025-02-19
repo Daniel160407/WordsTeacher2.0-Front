@@ -3,9 +3,12 @@ import Navbar from './components/Navbar';
 import TabContent from './components/TabContent';
 import Cookies from 'js-cookie';
 import Login from './components/Login';
+import Footer from './components/Footer';
 
 const App = () => {
   const [loadLoginForm, setLoadLoginForm] = useState(true);
+  const [languageId, setLanguageId] = useState(null);
+  const [updatedLanguageWords, setUpdatedLanguageWords] = useState([]);
 
   useEffect(() => {
     if (Cookies.get('token') !== undefined) {
@@ -20,7 +23,8 @@ const App = () => {
       ) : (
         <>
           <Navbar />
-          <TabContent />
+          <TabContent updatedLanguageWords={updatedLanguageWords} languageId={languageId}/>
+          <Footer setUpdatedWords={setUpdatedLanguageWords} setLanguageId={setLanguageId}/>
         </>
       )}
     </>

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import "../style/Home.scss";
 
-const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
+const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, languageId }) => {
   const [words, setWords] = useState([]);
   const [level, setLevel] = useState(0);
   const checkboxesRef = useRef({});
@@ -27,8 +27,11 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
   };
 
   useEffect(() => {
+    if(languageId !== null){
+      Cookies.set('languageId', languageId, {expires: 7});
+    }
     axios
-      .get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}`, {
+      .get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -38,13 +41,13 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
       });
 
     axios
-      .get(`http://localhost:8080/wordsTeacher/words/level?userid=${Cookies.get('userId')}`, {
+      .get(`http://localhost:8080/wordsTeacher/words/level?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
       })
       .then((response) => setLevel(response.data.level));
-  }, [wordsType]);
+  }, [wordsType, languageId]);
 
   useEffect(() => {
     if (updatedWords !== "") {
@@ -152,7 +155,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords }) => {
 
         axios
           .delete(
-            `http://localhost:8080/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${Cookies.get('userId')}`,
+            `http://localhost:8080/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
             {
               headers: {
                 Authorization: `${Cookies.get("token") || ""}`,

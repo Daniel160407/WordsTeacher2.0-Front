@@ -8,6 +8,7 @@ const Login = ({ setLoadLogInForm }) => {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [showRegistration, setShowRegistration] = useState(false);
+    const [language, setLanguage] = useState('');
 
     const handleLoginSubmit = (e) => {
         e.preventDefault();
@@ -21,7 +22,8 @@ const Login = ({ setLoadLogInForm }) => {
                 if (response.status === 202) {
                     console.log(response.data);
                     Cookies.set('token', response.headers.authorization, { expires: 7 });
-                    Cookies.set('userId', response.data)
+                    Cookies.set('userId', response.data);
+                    Cookies.set('languageId', 1);
                     setLoadLogInForm(false);
                 }
             })
@@ -35,11 +37,13 @@ const Login = ({ setLoadLogInForm }) => {
 
         const newUser = {
             email: email,
-            password: password
+            password: password,
+            language: language,
         };
         axios.post('http://localhost:8080/login', newUser)
             .then(response => {
                 if (response.status === 201) {
+                    Cookies.set('languageId', response.data);
                     setShowRegistration(false);
                 }
             })
@@ -73,6 +77,16 @@ const Login = ({ setLoadLogInForm }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+                    <div className='form-group'>
+                        <label htmlFor='language'>Enter you first language you want to learn</label>
+                        <input
+                            type="text"
+                            id="language"
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value)}
                             required
                         />
                     </div>

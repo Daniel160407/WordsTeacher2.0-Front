@@ -1,0 +1,106 @@
+$background-color: #1e1e1e;
+$text-color: #ffffff;
+$secondary-color: #444;
+$accent-color: #ff6b6b;
+$button-hover: #ff4c4c;
+$input-bg: #2d2d2d;
+$input-border: #555;
+$input-focus: #ff6b6b;
+
+.footer {
+    background-color: $background-color;
+    color: $text-color;
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 2px solid $secondary-color;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+    
+    .footer-heading {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .language-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+
+        .language-item {
+            background-color: $secondary-color;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+            cursor: pointer;
+
+            &:hover {
+                background-color: lighten($secondary-color, 10%);
+            }
+
+            .remove-button {
+                background: $accent-color;
+                border: none;
+                color: $text-color;
+                padding: 0.3rem 0.8rem;
+                border-radius: 12px;
+                cursor: pointer;
+                font-size: 0.8rem;
+                transition: background 0.3s ease;
+
+                &:hover {
+                    background: $button-hover;
+                }
+            }
+        }
+    }
+
+    .add-language {
+        margin-top: 1.5rem;
+
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        input {
+            background: $input-bg;
+            border: 2px solid $input-border;
+            color: $text-color;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s ease;
+            margin-right: 0.5rem;
+
+            &:focus {
+                border-color: $input-focus;
+            }
+        }
+
+        .add-button {
+            background: $accent-color;
+            border: none;
+            color: $text-color;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: $button-hover;
+            }
+        }
+    }
+}
