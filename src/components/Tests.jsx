@@ -18,9 +18,20 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   const [timerTime, setTimerTime] = useState(60);
   const [timeLeft, setTimeLeft] = useState(timerTime);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockMessage, setBlockMessage] = useState("");
 
   const resultsRef = useRef(null);
   const timerRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const handleApiError = (error) => {
+    if (error.response?.status === 403) {
+      setIsBlocked(true);
+      setBlockMessage(error.response.data.message || "This feature requires a premium subscription");
+    }
+    return { data: [] };
+  };
 
   const shuffleArray = (array) => {
     const newArray = [...array];
@@ -53,6 +64,10 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     });
   };
 
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     const fetchAllData = async () => {
       const userId = Cookies.get('userId');
@@ -63,13 +78,13 @@ const Tests = ({ updatedWords, newLanguageId }) => {
       }
 
       const urls = {
-        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}`,
-        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}`,
-        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}`,
-        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}`,
+        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
+        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
         all: [
-          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}`,
-          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}`,
+          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
         ],
       };
 
@@ -83,10 +98,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                     headers: {
                       Authorization: `${Cookies.get("token") || ""}`,
                     },
-                  }).catch((error) => {
-                    console.error(`Failed to fetch data from ${singleUrl}:`, error);
-                    return { data: [] };
-                  })
+                  }).catch(handleApiError)
                 )
               );
               const combinedData = responses.flatMap((response) => response.data);
@@ -96,10 +108,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                 headers: {
                   Authorization: `${Cookies.get("token") || ""}`,
                 },
-              }).catch((error) => {
-                console.error(`Failed to fetch data from ${url}:`, error);
-                return { data: [] };
-              });
+              }).catch(handleApiError);
               let responseData = response.data;
 
               if (key === "dictionary") {
@@ -113,15 +122,15 @@ const Tests = ({ updatedWords, newLanguageId }) => {
 
         setAllWords(Object.assign({}, ...data));
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        handleApiError(error);
       }
     };
 
     fetchAllData();
-  }, []);
+  }, [newLanguageId]);
 
   useEffect(() => {
-    if (!allWords[wordsList]) return;
+    if (!allWords[wordsList] || isBlocked) return;
 
     const filteredWords =
       wordsList === "dictionary" && firstLetter
@@ -152,7 +161,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     setOverallFeedback({});
     setCorrectAnswersCount(0);
     setAnswersChecked(false);
-  }, [wordsList, language, firstLetter, allWords]);
+  }, [wordsList, language, firstLetter, allWords, isBlocked]);
 
   useEffect(() => {
     if (updatedWords.length > 0) {
@@ -241,7 +250,20 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   }, []);
 
   return (
-    <div id="tests" className="tab-pane fade">
+    <div id="tests" className={`tab-pane fade ${isBlocked ? "blocked" : ""}`}>
+      {isBlocked && (
+        <div className="blocked-overlay">
+          <div className="blocked-content">
+            <div className="lock-icon">🔒</div>
+            <h3>Premium Feature Locked</h3>
+            <p>{blockMessage || "This feature requires a premium subscription"}</p>
+            <button className="subscribe-button" onClick={scrollToBottom}>
+              Upgrade to Unlock
+            </button>
+          </div>
+        </div>
+      )}
+
       <div>
         <select onChange={handleChangeLanguage} value={language}>
           <option value="GEO">GEO</option>
@@ -317,6 +339,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
               type="text"
               value={inputs[index] || ""}
               onChange={(e) => handleInputChange(e, index)}
+              disabled={isBlocked}
             />
             {overallFeedback[index] && <p>{overallFeedback[index]}</p>}
           </div>
@@ -325,10 +348,13 @@ const Tests = ({ updatedWords, newLanguageId }) => {
           type="button"
           className="btn btn-warning"
           onClick={checkAnswers}
+          disabled={isBlocked}
         >
           Check Answers
         </button>
       </div>
+
+      <div ref={bottomRef}></div>
     </div>
   );
 };

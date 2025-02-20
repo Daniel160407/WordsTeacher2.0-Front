@@ -22,8 +22,8 @@ const Login = ({ setLoadLogInForm }) => {
                 if (response.status === 202) {
                     console.log(response.data);
                     Cookies.set('token', response.headers.authorization, { expires: 7 });
-                    Cookies.set('userId', response.data);
-                    Cookies.set('languageId', 1);
+                    Cookies.set('userId', response.data, {expires: 365});
+                    Cookies.set('languageId', 1, {expires: 365});
                     setLoadLogInForm(false);
                 }
             })
@@ -43,7 +43,9 @@ const Login = ({ setLoadLogInForm }) => {
         axios.post('http://localhost:8080/login', newUser)
             .then(response => {
                 if (response.status === 201) {
-                    Cookies.set('languageId', response.data);
+                    const data = response.data;
+                    Cookies.set('languageId', data.id, {expires: 365});
+                    Cookies.set('plan', data.plan, {expires: 365});
                     setShowRegistration(false);
                 }
             })

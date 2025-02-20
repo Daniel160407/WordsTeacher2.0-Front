@@ -31,7 +31,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       Cookies.set('languageId', languageId, {expires: 7});
     }
     axios
-      .get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
+      .get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&tests=${false}`, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },

@@ -6,6 +6,10 @@ $button-hover: #ff4c4c;
 $input-bg: #2d2d2d;
 $input-border: #555;
 $input-focus: #ff6b6b;
+$coupon-bg: #333;
+$coupon-border: #555;
+$coupon-text: #ff6b6b;
+$coupon-hover: #444;
 
 .footer {
     background-color: $background-color;
@@ -15,7 +19,7 @@ $input-focus: #ff6b6b;
     border-top: 2px solid $secondary-color;
     border-radius: 10px 10px 0 0;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
-    
+
     .footer-heading {
         font-size: 1.5rem;
         margin-bottom: 1rem;
@@ -100,6 +104,56 @@ $input-focus: #ff6b6b;
 
             &:hover {
                 background: $button-hover;
+            }
+        }
+    }
+
+    .coupon-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+
+        .coupon-button {
+            background: $coupon-bg;
+            border: 2px solid $coupon-border;
+            color: $coupon-text;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 300%;
+                height: 300%;
+                background: radial-gradient(circle, rgba(255, 107, 107, 0.2), transparent);
+                transform: translate(-50%, -50%) scale(0);
+                transition: transform 0.5s ease;
+                border-radius: 50%;
+            }
+
+            &:hover {
+                background: $coupon-hover;
+                border-color: $accent-color;
+                color: $text-color;
+
+                &::before {
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+
+            &:active {
+                transform: scale(0.95);
             }
         }
     }
