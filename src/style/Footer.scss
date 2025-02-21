@@ -19,6 +19,7 @@ $coupon-hover: #444;
     border-top: 2px solid $secondary-color;
     border-radius: 10px 10px 0 0;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
 
     .footer-heading {
         font-size: 1.5rem;
@@ -70,6 +71,100 @@ $coupon-hover: #444;
 
     .add-language {
         margin-top: 1.5rem;
+        position: relative;
+        margin-bottom: 50px;
+
+        &.blocked {
+
+            > *:not(.blocked-overlay) {
+                filter: blur(4px);
+            }
+
+            .blocked-overlay {
+                display: flex;
+            }
+        }
+
+        .blocked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            margin-bottom: 100px;
+
+            .blocked-content {
+                text-align: center;
+                padding: 2rem;
+
+                .lock-icon {
+                    font-size: 3rem;
+                    margin-bottom: 1rem;
+                    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+                }
+
+                h3 {
+                    color: #ff6b6b;
+                    margin-bottom: 1rem;
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    color: #ccc;
+                    margin-bottom: 1.5rem;
+                    font-size: 1.1rem;
+                }
+
+                .subscribe-button {
+                    background: #333;
+                    border: 2px solid #555;
+                    color: #ff6b6b;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 25px;
+                    font-size: 1rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 300%;
+                        height: 300%;
+                        background: radial-gradient(circle, rgba(255, 107, 107, 0.2), transparent);
+                        transform: translate(-50%, -50%) scale(0);
+                        transition: transform 0.5s ease;
+                        border-radius: 50%;
+                    }
+
+                    &:hover {
+                        background: #444;
+                        border-color: #ff6b6b;
+                        color: #ffffff;
+
+                        &::before {
+                            transform: translate(-50%, -50%) scale(1);
+                        }
+                    }
+
+                    &:active {
+                        transform: scale(0.95);
+                    }
+                }
+            }
+        }
 
         h3 {
             font-size: 1.2rem;

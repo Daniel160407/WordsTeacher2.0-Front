@@ -8,14 +8,24 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
     const [languages, setLanguages] = useState([]);
     const [newLanguage, setNewLanguage] = useState("");
     const [showRemoveButton, setShowRemoveButton] = useState(null);
+    const [isBlocked, setIsBlocked] = useState(false);
+    const [blockMessage, setBlockMessage] = useState("");
 
     useEffect(() => {
+        setIsBlocked(Cookies.get('plan') === 'free');
         fetchLanguages();
     }, []);
 
+    const handleApiError = (error) => {
+        if (error.response?.status === 403) {
+            setIsBlocked(true);
+            setBlockMessage(error.response.data.message || "This feature requires a premium subscription");
+        }
+    };
+
     const fetchLanguages = () => {
         axios
-            .get(`${process.env.REACT_APP_API_URL}/language?userid=${Cookies.get('userId')}`, {
+            .get(`http://localhost:8080/language?userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -24,11 +34,13 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                 setLanguages(response.data);
             })
             .catch((error) => {
+                handleApiError(error);
                 console.error("Failed to fetch languages:", error);
             });
     };
 
     const addLanguage = () => {
+        if (isBlocked) return;
         if (!newLanguage.trim()) return;
 
         const language = {
@@ -37,7 +49,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         };
 
         axios
-            .post(`${process.env.REACT_APP_API_URL}/language`, language, {
+            .post(`http://localhost:8080/language`, language, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -47,13 +59,15 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                 fetchLanguages();
             })
             .catch((error) => {
+                handleApiError(error);
                 console.error("Failed to add language:", error);
             });
     };
 
     const removeLanguage = (language) => {
+        if (isBlocked) return;
         axios
-            .delete(`${process.env.REACT_APP_API_URL}/language?language=${language}&userid=${Cookies.get('userId')}`, {
+            .delete(`http://localhost:8080/language?language=${language}&userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -62,11 +76,13 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                 fetchLanguages();
             })
             .catch((error) => {
+                handleApiError(error);
                 console.error("Failed to remove language:", error);
             });
     };
 
     const handleLanguageDoubleClick = (language, event) => {
+        if (isBlocked) return;
         if (event.type === "dblclick" || (event.type === "contextmenu" && event.button === 2)) {
             event.preventDefault();
             setShowRemoveButton(language);
@@ -74,14 +90,19 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
     };
 
     const handleLanguageClick = (language) => {
-        axios.get(`${process.env.REACT_APP_API_URL}/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
+        if (isBlocked) {
+            alert("Language switching is blocked. Please upgrade to premium.");
+            return;
+        }
+
+        axios.get(`http://localhost:8080/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
             headers: {
                 Authorization: `${Cookies.get("token") || ""}`,
             },
         })
             .then(response => {
                 const languageId = response.data;
-                axios.get(`${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
+                axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
                     headers: {
                         Authorization: `${Cookies.get("token") || ""}`,
                     },
@@ -97,6 +118,13 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         if (event.key === 'Enter') {
             addLanguage();
         }
+    };
+
+    const scrollToBottom = () => {
+        window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+        });
     };
 
     return (
@@ -123,7 +151,19 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                     </li>
                 ))}
             </ul>
-            <div className="add-language">
+            <div className={`add-language ${isBlocked ? "blocked" : ""}`}>
+                {isBlocked && (
+                    <div className="blocked-overlay">
+                        <div className="blocked-content">
+                            <div className="lock-icon">🔒</div>
+                            <h3>Premium Feature Locked</h3>
+                            <p>{blockMessage}</p>
+                            <button className="subscribe-button" onClick={scrollToBottom}>
+                                Upgrade to Unlock
+                            </button>
+                        </div>
+                    </div>
+                )}
                 <h3>Add new language</h3>
                 <input
                     type="text"
@@ -131,15 +171,14 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                     onChange={(e) => setNewLanguage(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Enter language"
+                    disabled={isBlocked}
                 />
-                <button onClick={addLanguage} className="add-button">
+                <button onClick={addLanguage} className="add-button" disabled={isBlocked}>
                     Add
                 </button>
             </div>
 
-            {Cookies.get('plan') === 'Free' && (
-                <PricingTable />
-            )}
+            {Cookies.get('plan') === 'free' && <PricingTable />}
         </div>
     );
 };

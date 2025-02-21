@@ -31,7 +31,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       Cookies.set('languageId', languageId, {expires: 7});
     }
     axios
-      .get(`${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&tests=${false}`, {
+      .get(`http://localhost:8080/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&tests=${false}`, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -41,7 +41,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       });
 
     axios
-      .get(`${process.env.REACT_APP_API_URL}/wordsTeacher/words/level?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
+      .get(`http://localhost:8080/wordsTeacher/words/level?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -60,7 +60,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       (word) => checkboxesRef.current[word.word]?.checked
     );
     axios
-      .put("${process.env.REACT_APP_API_URL}/wordsTeacher/dropper", checkedWords, {
+      .put("http://localhost:8080/wordsTeacher/dropper", checkedWords, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -72,7 +72,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
           showAdvancementMessage(response.data.advancement);
         }
         axios
-          .get("${process.env.REACT_APP_API_URL}/wordsTeacher/words/level", {
+          .get("http://localhost:8080/wordsTeacher/words/level", {
             headers: {
               Authorization: `${Cookies.get("token") || ""}`,
             },
@@ -114,7 +114,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
 
     const changedWordArray = [word, changedWord];
     axios
-      .put(`${process.env.REACT_APP_API_URL}/wordsTeacher/words`, changedWordArray, {
+      .put(`http://localhost:8080/wordsTeacher/words`, changedWordArray, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -127,7 +127,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
 
         axios
           .put(
-            "${process.env.REACT_APP_API_URL}/wordsTeacher/dictionary",
+            "http://localhost:8080/wordsTeacher/dictionary",
             changedWordArray,
             {
               headers: {
@@ -142,7 +142,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
   const handleRemove = (word) => {
     axios
       .delete(
-        `${process.env.REACT_APP_API_URL}/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}&wordtype=${word.wordType}&userid=${Cookies.get('userId')}`,
+        `http://localhost:8080/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}&wordtype=${word.wordType}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
         {
           headers: {
             Authorization: `${Cookies.get("token") || ""}`,
@@ -155,7 +155,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
 
         axios
           .delete(
-            `${process.env.REACT_APP_API_URL}/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
+            `http://localhost:8080/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&languageid=${Cookies.get('languageId')}`,
             {
               headers: {
                 Authorization: `${Cookies.get("token") || ""}`,

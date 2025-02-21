@@ -17,13 +17,14 @@ const Login = ({ setLoadLogInForm }) => {
             email: email,
             password: password
         };
-        axios.put('${process.env.REACT_APP_API_URL}/login', user)
+        axios.put('http://localhost:8080/login', user)
             .then(response => {
                 if (response.status === 202) {
-                    console.log(response.data);
                     Cookies.set('token', response.headers.authorization, { expires: 7 });
-                    Cookies.set('userId', response.data, {expires: 365});
-                    Cookies.set('languageId', 1, {expires: 365});
+                    Cookies.set('userId', response.data.userId, {expires: 365});
+                    Cookies.set('plan', response.data.plan, {expires: 365});
+                    Cookies.set('languageId', response.data.languageId, {expires: 365});
+                    
                     setLoadLogInForm(false);
                 }
             })
@@ -40,7 +41,7 @@ const Login = ({ setLoadLogInForm }) => {
             password: password,
             language: language,
         };
-        axios.post('${process.env.REACT_APP_API_URL}/login', newUser)
+        axios.post('http://localhost:8080/login', newUser)
             .then(response => {
                 if (response.status === 201) {
                     const data = response.data;
