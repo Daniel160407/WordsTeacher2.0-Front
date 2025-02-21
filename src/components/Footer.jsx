@@ -15,7 +15,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
 
     const fetchLanguages = () => {
         axios
-            .get(`http://localhost:8080/language?userid=${Cookies.get('userId')}`, {
+            .get(`93.177.172.105:8080/language?userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -37,7 +37,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         };
 
         axios
-            .post(`http://localhost:8080/language`, language, {
+            .post(`93.177.172.105:8080/language`, language, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -53,7 +53,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
 
     const removeLanguage = (language) => {
         axios
-            .delete(`http://localhost:8080/language?language=${language}&userid=${Cookies.get('userId')}`, {
+            .delete(`93.177.172.105:8080/language?language=${language}&userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -74,14 +74,14 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
     };
 
     const handleLanguageClick = (language) => {
-        axios.get(`http://localhost:8080/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
+        axios.get(`93.177.172.105:8080/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
             headers: {
                 Authorization: `${Cookies.get("token") || ""}`,
             },
         })
             .then(response => {
                 const languageId = response.data;
-                axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
+                axios.get(`93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
                     headers: {
                         Authorization: `${Cookies.get("token") || ""}`,
                     },
@@ -136,7 +136,10 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                     Add
                 </button>
             </div>
-            <PricingTable/>
+
+            {Cookies.get('plan') === 'Free' && (
+                <PricingTable />
+            )}
         </div>
     );
 };

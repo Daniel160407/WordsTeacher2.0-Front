@@ -17,7 +17,7 @@ const Login = ({ setLoadLogInForm }) => {
             email: email,
             password: password
         };
-        axios.put('http://localhost:8080/login', user)
+        axios.put('93.177.172.105:8080/login', user)
             .then(response => {
                 if (response.status === 202) {
                     console.log(response.data);
@@ -40,7 +40,7 @@ const Login = ({ setLoadLogInForm }) => {
             password: password,
             language: language,
         };
-        axios.post('http://localhost:8080/login', newUser)
+        axios.post('93.177.172.105:8080/login', newUser)
             .then(response => {
                 if (response.status === 201) {
                     const data = response.data;

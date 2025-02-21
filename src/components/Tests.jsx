@@ -78,13 +78,13 @@ const Tests = ({ updatedWords, newLanguageId }) => {
       }
 
       const urls = {
-        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
-        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
-        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        words: `93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        difficult: `93.177.172.105:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
+        droppedWords: `93.177.172.105:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+        dictionary: `93.177.172.105:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
         all: [
-          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+          `93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+          `93.177.172.105:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
         ],
       };
 

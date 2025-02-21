@@ -13,7 +13,7 @@ const Dictionary = ({ updatedWords, langueageId }) => {
         }
         const fetchWords = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/wordsTeacher/dictionary?type=all&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&tests=${false}`, {
+                const response = await axios.get(`93.177.172.105:8080/wordsTeacher/dictionary?type=all&userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}&tests=${false}`, {
                         headers: {
                           Authorization: `${Cookies.get("token") || ""}`,
                         },
