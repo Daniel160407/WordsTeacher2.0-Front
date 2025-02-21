@@ -78,13 +78,13 @@ const Tests = ({ updatedWords, newLanguageId }) => {
       }
 
       const urls = {
-        words: `93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-        difficult: `93.177.172.105:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
-        droppedWords: `93.177.172.105:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
-        dictionary: `93.177.172.105:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        words: `${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        difficult: `${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
+        droppedWords: `${process.env.REACT_APP_API_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+        dictionary: `${process.env.REACT_APP_API_URL}/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
         all: [
-          `93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-          `93.177.172.105:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+          `${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+          `${process.env.REACT_APP_API_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
         ],
       };
 

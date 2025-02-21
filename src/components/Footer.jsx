@@ -15,7 +15,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
 
     const fetchLanguages = () => {
         axios
-            .get(`93.177.172.105:8080/language?userid=${Cookies.get('userId')}`, {
+            .get(`${process.env.REACT_APP_API_URL}/language?userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -37,7 +37,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         };
 
         axios
-            .post(`93.177.172.105:8080/language`, language, {
+            .post(`${process.env.REACT_APP_API_URL}/language`, language, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -53,7 +53,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
 
     const removeLanguage = (language) => {
         axios
-            .delete(`93.177.172.105:8080/language?language=${language}&userid=${Cookies.get('userId')}`, {
+            .delete(`${process.env.REACT_APP_API_URL}/language?language=${language}&userid=${Cookies.get('userId')}`, {
                 headers: {
                     Authorization: `${Cookies.get("token") || ""}`,
                 },
@@ -74,14 +74,14 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
     };
 
     const handleLanguageClick = (language) => {
-        axios.get(`93.177.172.105:8080/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
+        axios.get(`${process.env.REACT_APP_API_URL}/language/id?language=${language}&userid=${Cookies.get('userId')}`, {
             headers: {
                 Authorization: `${Cookies.get("token") || ""}`,
             },
         })
             .then(response => {
                 const languageId = response.data;
-                axios.get(`93.177.172.105:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
+                axios.get(`${process.env.REACT_APP_API_URL}/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
                     headers: {
                         Authorization: `${Cookies.get("token") || ""}`,
                     },

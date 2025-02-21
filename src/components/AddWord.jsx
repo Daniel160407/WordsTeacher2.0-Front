@@ -27,7 +27,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     };
 
     axios
-      .post("93.177.172.105:8080/wordsTeacher/words", newWord, {
+      .post("${process.env.REACT_APP_API_URL}/wordsTeacher/words", newWord, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
@@ -39,7 +39,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
       });
 
     axios
-      .post("93.177.172.105:8080/wordsTeacher/dictionary", newWord, {
+      .post("${process.env.REACT_APP_API_URL}/wordsTeacher/dictionary", newWord, {
         headers: {
           Authorization: `${Cookies.get("token") || ""}`,
         },
