@@ -1,0 +1,46 @@
+.dark-theme {
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  font-family: "Arial", sans-serif;
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #4db8ff;
+  margin-bottom: 20px;
+}
+
+.section {
+  background: #2c2c2c;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.8rem;
+  color: #ffcc00;
+  margin-bottom: 10px;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  font-size: 1.2rem;
+  padding: 8px 0;
+  color: #dcdcdc;
+}
+
+.feature-list li::before {
+  content: "⭐ ";
+  color: #ffcc00;
+}

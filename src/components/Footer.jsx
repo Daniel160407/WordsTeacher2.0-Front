@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import "../style/Footer.scss";
 import PricingTable from "./freemius/PricingTable";
+import Documentation from "./Documentation";
 
 const Footer = ({ setUpdatedWords, setLanguageId }) => {
     const [languages, setLanguages] = useState([]);
@@ -178,6 +179,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                 </button>
             </div>
 
+            <Documentation />
             {Cookies.get('plan') === 'free' && <PricingTable />}
         </div>
     );

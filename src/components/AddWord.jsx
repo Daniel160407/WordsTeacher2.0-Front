@@ -85,6 +85,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
           <select onChange={(e) => setWordType(e.target.value)}>
             <option value={"word"}>Word</option>
             <option value={"difficult"}>Difficult Verb</option>
+            <option value={"redemittel"}>Redemittel</option>
           </select>
           <button type="submit" className="btn-warning">
             Add Word

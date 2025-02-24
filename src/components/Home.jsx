@@ -185,6 +185,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       <select onChange={(e) => setWordsType(e.target.value)}>
         <option value="word">Words</option>
         <option value="difficult">Difficult Verbs</option>
+        <option value="redemittel">Redemittels</option>
       </select>
       {words.map((word) => (
         <div
