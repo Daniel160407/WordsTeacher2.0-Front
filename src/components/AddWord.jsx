@@ -19,9 +19,9 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     event.preventDefault();
 
     const newWord = {
-      word: word,
-      meaning: meaning,
-      wordType: wordType,
+      word,
+      meaning,
+      wordType,
       userId: Cookies.get('userId'),
       languageId: Cookies.get('languageId'),
     };

@@ -42,6 +42,7 @@ h1 {
         justify-content: space-between;
         align-items: center;
         transition: all 0.2s ease;
+        cursor: pointer;
 
         &:hover {
             background-color: #555;

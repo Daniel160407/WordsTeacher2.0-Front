@@ -38,6 +38,7 @@ const Documentation = () => {
         and after dropping them to the next level, they will be automaticaly deleted 
         (Don`t worry, they will be available in your personal dictionary). After that you can add new word combinations.
         </p>
+        <a id="redirection" href="/">Click here to start learning</a>
       </section>
     </div>
   );

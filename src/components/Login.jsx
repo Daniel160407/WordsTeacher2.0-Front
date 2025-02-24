@@ -14,8 +14,8 @@ const Login = ({ setLoadLogInForm }) => {
         e.preventDefault();
 
         const user = {
-            email: email,
-            password: password
+            email,
+            password
         };
         axios.put('http://localhost:8080/login', user)
             .then(response => {
@@ -37,9 +37,9 @@ const Login = ({ setLoadLogInForm }) => {
         e.preventDefault();
 
         const newUser = {
-            email: email,
-            password: password,
-            language: language,
+            email,
+            password,
+            language,
         };
         axios.post('http://localhost:8080/login', newUser)
             .then(response => {

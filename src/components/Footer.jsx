@@ -103,7 +103,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         })
             .then(response => {
                 const languageId = response.data;
-                axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}`, {
+                axios.get(`http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${Cookies.get('userId')}&languageid=${languageId}&tests=false`, {
                     headers: {
                         Authorization: `${Cookies.get("token") || ""}`,
                     },
@@ -179,7 +179,6 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                 </button>
             </div>
 
-            <Documentation />
             {Cookies.get('plan') === 'free' && <PricingTable />}
         </div>
     );
