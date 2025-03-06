@@ -98,6 +98,10 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                     headers: {
                       Authorization: `${Cookies.get("token") || ""}`,
                     },
+                  }).then(response => {
+                    if (response?.status !== 403){
+                      Cookies.set('plan', 'ultimate', {expires: 365});
+                    }
                   }).catch(handleApiError)
                 )
               );

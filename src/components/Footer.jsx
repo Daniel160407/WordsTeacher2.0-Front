@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import "../style/Footer.scss";
 import PricingTable from "./freemius/PricingTable";
 import Documentation from "./Documentation";
+import Logout from "./DangerZone";
 
 const Footer = ({ setUpdatedWords, setLanguageId }) => {
     const [languages, setLanguages] = useState([]);
@@ -178,6 +179,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
                     Add
                 </button>
             </div>
+            <Logout/>
 
             {Cookies.get('plan') === 'free' && <PricingTable />}
         </div>

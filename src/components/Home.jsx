@@ -72,7 +72,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
           showAdvancementMessage(response.data.advancement);
         }
         axios
-          .get("http://localhost:8080/wordsTeacher/words/level", {
+          .get(`http://localhost:8080/wordsTeacher/words/level?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`, {
             headers: {
               Authorization: `${Cookies.get("token") || ""}`,
             },

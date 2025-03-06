@@ -1,0 +1,86 @@
+.dangerLogin {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+
+  #loginForm {
+    background-color: #2d2d2d;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+
+    h3 {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: red;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #ffffff;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #444;
+        border-radius: 5px;
+        background-color: #3d3d3d;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+          border-color: #ff4757;
+          outline: none;
+        }
+
+        &::placeholder {
+          color: #888;
+        }
+      }
+    }
+
+    .deleteSubmitBtn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(45deg, #c0392b, #e74c3c);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(45deg, #922b21, #e74c3c);
+      }
+    }
+  }
+}

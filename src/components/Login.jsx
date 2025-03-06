@@ -84,7 +84,7 @@ const Login = ({ setLoadLogInForm }) => {
                         />
                     </div>
                     <div className='form-group'>
-                        <label htmlFor='language'>Enter you first language you want to learn</label>
+                        <label htmlFor='language'>Enter your first language you want to learn</label>
                         <input
                             type="text"
                             id="language"
