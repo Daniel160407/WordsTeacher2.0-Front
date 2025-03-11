@@ -4,14 +4,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import DangerLogin from "./forms/DangerLogin";
 
-const Logout = () => {
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const DangerZone = () => {
   const [loadLogInForm, setLoadLogInForm] = useState(false);
   const [deletingPermission, setDeletingPermission] = useState(false);
 
   useEffect(() => {
     if (deletingPermission) {
       axios
-        .delete(`http://localhost:8080/login?userid=${Cookies.get("userId")}`, {
+        .delete(`${API_BASE_URL}/login?userid=${Cookies.get("userId")}`, {
           headers: {
             Authorization: `${Cookies.get("token") || ""}`,
           },
@@ -55,4 +57,4 @@ const Logout = () => {
   );
 };
 
-export default Logout;
+export default DangerZone;

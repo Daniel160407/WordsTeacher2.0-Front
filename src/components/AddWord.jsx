@@ -1,95 +1,77 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import "../style/AddWord.scss";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 // eslint-disable-next-line react/prop-types
 const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
-  const [word, setWord] = useState("");
-  const [meaning, setMeaning] = useState("");
-  const [wordType, setWordType] = useState("word");
+  const [wordData, setWordData] = useState({
+    word: "",
+    meaning: "",
+    wordType: "word",
+  });
   const [advancement, setAdvancement] = useState(null);
 
-  const playAdvancementSound = () => {
-    const sound = new Audio("/sounds/advancement_sound.mp3");
-    sound.play();
+  const headers = {
+    Authorization: Cookies.get("token") || "",
   };
 
-  const addWord = (event) => {
+  const playAdvancementSound = useCallback(() => {
+    new Audio("/sounds/advancement_sound.mp3").play();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setWordData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const addWord = async (event) => {
     event.preventDefault();
 
     const newWord = {
-      word,
-      meaning,
-      wordType,
-      userId: Cookies.get('userId'),
-      languageId: Cookies.get('languageId'),
+      ...wordData,
+      userId: Cookies.get("userId"),
+      languageId: Cookies.get("languageId"),
     };
 
-    axios
-      .post("http://localhost:8080/wordsTeacher/words", newWord, {
-        headers: {
-          Authorization: `${Cookies.get("token") || ""}`,
-        },
-      })
-      .then((response) => {
-        setUpdatedWords(response.data);
-        setWord("");
-        setMeaning("");
-      });
+    try {
+      const [wordsResponse, dictionaryResponse] = await Promise.all([
+        axios.post(`${API_BASE_URL}/wordsTeacher/words`, newWord, { headers }),
+        axios.post(`${API_BASE_URL}/wordsTeacher/dictionary`, newWord, { headers }),
+      ]);
 
-    axios
-      .post("http://localhost:8080/wordsTeacher/dictionary", newWord, {
-        headers: {
-          Authorization: `${Cookies.get("token") || ""}`,
-        },
-      })
-      .then((response) => {
-        setUpdatedDictionaryWords(response.data.dictionaryDtos);
-        setAdvancement(response.data.advancement ?? null);
-        if (response.data.advancement) {
-          playAdvancementSound();
-          setTimeout(() => setAdvancement(null), 5000);
-        }
-      });
+      setUpdatedWords(wordsResponse.data);
+      setUpdatedDictionaryWords(dictionaryResponse.data.dictionaryDtos);
+      setWordData({ word: "", meaning: "", wordType: wordData.wordType });
+
+      if (dictionaryResponse.data.advancement) {
+        setAdvancement(dictionaryResponse.data.advancement);
+        playAdvancementSound();
+        setTimeout(() => setAdvancement(null), 5000);
+      }
+    } catch (error) {
+      console.error("Error adding word:", error);
+    }
   };
 
   return (
     <div id="addWords" className="tab-pane fade">
       <h2>Add New Words</h2>
       <div className="center-box">
-        {advancement && (
-          <div className="advancement-message">
-            <h3>{advancement}</h3>
-          </div>
-        )}
+        {advancement && <div className="advancement-message fade-in"><h3>{advancement}</h3></div>}
         <form id="wordInputForm" onSubmit={addWord}>
           <h3>Word:</h3>
-          <input
-            id="word"
-            value={word}
-            onChange={(e) => setWord(e.target.value)}
-            name="word"
-            type="text"
-            required
-          />
+          <input name="word" value={wordData.word} onChange={handleChange} type="text" required />
           <h3>Meaning:</h3>
-          <input
-            id="meaning"
-            value={meaning}
-            onChange={(e) => setMeaning(e.target.value)}
-            name="meaning"
-            type="text"
-            required
-          />
-          <select onChange={(e) => setWordType(e.target.value)}>
-            <option value={"word"}>Word</option>
-            <option value={"difficult"}>Difficult Verb</option>
-            <option value={"redemittel"}>Redemittel</option>
+          <input name="meaning" value={wordData.meaning} onChange={handleChange} type="text" required />
+          <select name="wordType" value={wordData.wordType} onChange={handleChange}>
+            <option value="word">Word</option>
+            <option value="difficult">Difficult Verb</option>
+            <option value="redemittel">Redemittel</option>
           </select>
-          <button type="submit" className="btn-warning">
-            Add Word
-          </button>
+          <button type="submit" className="btn-warning">Add Word</button>
         </form>
       </div>
     </div>

@@ -1,7 +1,13 @@
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import "../style/Tests.scss";
+import Timer from "./uiComponents/Timer";
+import WordInput from "./uiComponents/WordInput";
+import BlockedOverlay from "./uiComponents/BlockedOverlay";
+import TimeUpModal from "./uiComponents/TimeUpModal";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Tests = ({ updatedWords, newLanguageId }) => {
   const [language, setLanguage] = useState("GEO");
@@ -16,13 +22,11 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   const [firstLetter, setFirstLetter] = useState("");
   const [timerChecked, setTimerChecked] = useState(false);
   const [timerTime, setTimerTime] = useState(60);
-  const [timeLeft, setTimeLeft] = useState(timerTime);
-  const [timerRunning, setTimerRunning] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockMessage, setBlockMessage] = useState("");
+  const [showTimeUpModal, setShowTimeUpModal] = useState(false);
 
   const resultsRef = useRef(null);
-  const timerRef = useRef(null);
   const bottomRef = useRef(null);
 
   const handleApiError = (error) => {
@@ -71,20 +75,20 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   useEffect(() => {
     const fetchAllData = async () => {
       const userId = Cookies.get('userId');
-      const languageId =  newLanguageId !== null ? newLanguageId : Cookies.get('languageId');
+      const languageId = newLanguageId !== null ? newLanguageId : Cookies.get('languageId');
       if (!userId) {
         console.error("User ID is missing or invalid.");
         return;
       }
 
       const urls = {
-        words: `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-        difficult: `http://localhost:8080/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
-        droppedWords: `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
-        dictionary: `http://localhost:8080/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        words: `${API_BASE_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        difficult: `${API_BASE_URL}/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
+        droppedWords: `${API_BASE_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+        dictionary: `${API_BASE_URL}/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
         all: [
-          `http://localhost:8080/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-          `http://localhost:8080/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+          `${API_BASE_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+          `${API_BASE_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
         ],
       };
 
@@ -98,14 +102,17 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                     headers: {
                       Authorization: `${Cookies.get("token") || ""}`,
                     },
-                  }).then(response => {
-                    if (response?.status !== 403){
-                      Cookies.set('plan', 'ultimate', {expires: 365});
-                    }
-                  }).catch(handleApiError)
+                  })
+                    .then((response) => {
+                      if (response?.status !== 403) {
+                        Cookies.set('plan', 'ultimate', { expires: 365 });
+                      }
+                      return response.data || [];
+                    })
+                    .catch(handleApiError)
                 )
               );
-              const combinedData = responses.flatMap((response) => response.data);
+              const combinedData = responses.flatMap((response) => response || []);
               return { [key]: shuffleArray(combinedData) };
             } else {
               const response = await axios.get(url, {
@@ -113,7 +120,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                   Authorization: `${Cookies.get("token") || ""}`,
                 },
               }).catch(handleApiError);
-              let responseData = response.data;
+              let responseData = response?.data || [];
 
               if (key === "dictionary") {
                 responseData = sortDictionaryWords(responseData);
@@ -124,7 +131,9 @@ const Tests = ({ updatedWords, newLanguageId }) => {
           })
         );
 
-        setAllWords(Object.assign({}, ...data));
+        const mergedData = Object.assign({}, ...data);
+        console.log("Fetched Data:", mergedData);
+        setAllWords(mergedData);
       } catch (error) {
         handleApiError(error);
       }
@@ -221,52 +230,21 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     }
   };
 
-  const startTimer = () => {
-    if (timerRunning) return;
-    setTimeLeft(timerTime);
-    setTimerRunning(true);
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timerRef.current);
-          setTimerRunning(false);
-          alert("Time is up!");
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
+  const handleTimeUp = () => {
+    setShowTimeUpModal(true);
   };
 
-  const stopTimer = () => {
-    clearInterval(timerRef.current);
-    setTimerRunning(false);
-    setTimeLeft(0);
+  const closeTimeUpModal = () => {
+    setShowTimeUpModal(false);
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div id="tests" className={`tab-pane fade ${isBlocked ? "blocked" : ""}`}>
       {isBlocked && (
-        <div className="blocked-overlay">
-          <div className="blocked-content">
-            <div className="lock-icon">🔒</div>
-            <h3>Premium Feature Locked</h3>
-            <p>{blockMessage || "This feature requires a premium subscription"}</p>
-            <button className="subscribe-button" onClick={scrollToBottom}>
-              Upgrade to Unlock
-            </button>
-          </div>
-        </div>
+        <BlockedOverlay message={blockMessage} onUpgrade={scrollToBottom} />
       )}
+
+      {showTimeUpModal && <TimeUpModal onClose={closeTimeUpModal} />}
 
       <div>
         <select onChange={handleChangeLanguage} value={language}>
@@ -306,26 +284,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         </div>
 
         {timerChecked && (
-          <div>
-            <input
-              type="number"
-              value={timerTime}
-              onChange={(e) => {
-                const value = e.target.value;
-                setTimerTime(value === "" ? "" : Number(value));
-              }}
-            />
-
-            <div className="timerControlButtons">
-              <button className="btn-gold" onClick={startTimer}>
-                Start
-              </button>
-              <button className="btn-danger" onClick={stopTimer}>
-                Stop
-              </button>
-            </div>
-            <h3 id="time">{timeLeft}</h3>
-          </div>
+          <Timer timerTime={timerTime} setTimerTime={setTimerTime} onTimeUp={handleTimeUp} />
         )}
 
         <div ref={resultsRef}>
@@ -337,16 +296,14 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         </div>
 
         {words.map((word, index) => (
-          <div className="word" key={index}>
-            <h1>{word}</h1>
-            <input
-              type="text"
-              value={inputs[index] || ""}
-              onChange={(e) => handleInputChange(e, index)}
-              disabled={isBlocked}
-            />
-            {overallFeedback[index] && <p>{overallFeedback[index]}</p>}
-          </div>
+          <WordInput
+            key={index}
+            word={word}
+            value={inputs[index]}
+            onChange={(e) => handleInputChange(e, index)}
+            disabled={isBlocked}
+            feedback={overallFeedback[index]}
+          />
         ))}
         <button
           type="button"

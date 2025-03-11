@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import "../../style/forms/DangerLogin.scss";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const DangerLogin = ({ setDeletingPermission }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ const DangerLogin = ({ setDeletingPermission }) => {
       password,
     };
     axios
-      .put("http://localhost:8080/login", user)
+      .put(`${API_BASE_URL}/login`, user)
       .then((response) => {
         if (response.status === 202) {
           setDeletingPermission(true);
