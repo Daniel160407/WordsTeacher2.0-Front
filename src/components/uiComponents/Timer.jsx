@@ -38,7 +38,7 @@ const Timer = ({ timerTime, setTimerTime, onTimeUp }) => {
   }, []);
 
   return (
-    <div>
+    <div className="timer">
       <input
         type="number"
         value={timerTime}

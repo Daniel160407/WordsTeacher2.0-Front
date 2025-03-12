@@ -14,9 +14,22 @@ const WordItem = ({
 }) => {
   const [visibleWord, setVisibleWord] = useState(null);
   const [editWord, setEditWord] = useState(null);
+  let touchTimeout = null;
 
   const handleContextMenu = () => {
     setVisibleWord(word.word === visibleWord ? null : word.word);
+  };
+
+  const handleTouchStart = () => {
+    touchTimeout = setTimeout(() => {
+      handleContextMenu();
+    }, 500); // 500ms für langes Drücken
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimeout) {
+      clearTimeout(touchTimeout);
+    }
   };
 
   const handleEdit = () => {
@@ -67,6 +80,8 @@ const WordItem = ({
         e.preventDefault();
         handleContextMenu();
       }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {editWord === word.word ? (
         <EditWordForm
@@ -98,11 +113,13 @@ const WordItem = ({
           />
         </div>
       )}
-      <input
-        className="checkbox"
-        type="checkbox"
-        ref={(el) => (checkboxesRef.current[word.word] = el)}
-      />
+      <div>
+        <input
+          className="checkbox"
+          type="checkbox"
+          ref={(el) => (checkboxesRef.current[word.word] = el)}
+        />
+      </div>
     </div>
   );
 };

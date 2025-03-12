@@ -44,6 +44,9 @@ const Dictionary = ({ updatedWords, languageId }) => {
     return (
         <div id="dictionary" className="dictionary-container tab-pane fade">
             <SearchBar search={search} setSearch={setSearch} />
+            <div className="word-count-label">
+                <strong>Words in Dictionary:</strong> {words.length}
+            </div>
             <DictionaryWordList words={words} search={search} />
         </div>
     );
