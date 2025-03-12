@@ -51,6 +51,11 @@
       }
     }
 
+    .meta-data {
+      display: flex;
+      gap: 20px;
+    }
+
     select {
       width: 200px;
       max-width: 330px;

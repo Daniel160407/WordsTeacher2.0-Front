@@ -17,6 +17,8 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
   const headers = {
     Authorization: Cookies.get("token") || "",
   };
+  
+  const [languageLevel, setLanguageLevel] = useState(Cookies.get('languageLevel'));
 
   const playAdvancementSound = useCallback(() => {
     new Audio("/sounds/advancement_sound.mp3").play();
@@ -32,6 +34,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
 
     const newWord = {
       ...wordData,
+      level: languageLevel,
       userId: Cookies.get("userId"),
       languageId: Cookies.get("languageId"),
     };
@@ -39,7 +42,9 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     try {
       const [wordsResponse, dictionaryResponse] = await Promise.all([
         axios.post(`${API_BASE_URL}/wordsTeacher/words`, newWord, { headers }),
-        axios.post(`${API_BASE_URL}/wordsTeacher/dictionary`, newWord, { headers }),
+        axios.post(`${API_BASE_URL}/wordsTeacher/dictionary`, newWord, {
+          headers,
+        }),
       ]);
 
       setUpdatedWords(wordsResponse.data);
@@ -60,18 +65,57 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     <div id="addWords" className="tab-pane fade">
       <h2>Add New Words</h2>
       <div className="center-box">
-        {advancement && <div className="advancement-message fade-in"><h3>{advancement}</h3></div>}
+        {advancement && (
+          <div className="advancement-message fade-in">
+            <h3>{advancement}</h3>
+          </div>
+        )}
         <form id="wordInputForm" onSubmit={addWord}>
           <h3>Word:</h3>
-          <input name="word" value={wordData.word} onChange={handleChange} type="text" required />
+          <input
+            name="word"
+            value={wordData.word}
+            onChange={handleChange}
+            type="text"
+            required
+          />
           <h3>Meaning:</h3>
-          <input name="meaning" value={wordData.meaning} onChange={handleChange} type="text" required />
-          <select name="wordType" value={wordData.wordType} onChange={handleChange}>
-            <option value="word">Word</option>
-            <option value="difficult">Difficult Verb</option>
-            <option value="redemittel">Redemittel</option>
-          </select>
-          <button type="submit" className="btn-warning">Add Word</button>
+          <input
+            name="meaning"
+            value={wordData.meaning}
+            onChange={handleChange}
+            type="text"
+            required
+          />
+          <div className="meta-data">
+            <select
+              name="wordType"
+              value={wordData.wordType}
+              onChange={handleChange}
+            >
+              <option value="word">Word</option>
+              <option value="difficult">Difficult Verb</option>
+              <option value="redemittel">Redemittel</option>
+            </select>
+            <select
+              className="level"
+              value={languageLevel}
+              onChange={(e) => {
+                setLanguageLevel(e.target.value);
+                Cookies.set("languageLevel", e.target.value, { expires: 365 });
+              }}
+            >
+              <option>A1</option>
+              <option>A2</option>
+              <option>B1</option>
+              <option>B2</option>
+              <option>C1</option>
+              <option>C2</option>
+            </select>
+          </div>
+          <button type="submit" className="btn-warning">
+            Add Word
+          </button>
         </form>
       </div>
     </div>
