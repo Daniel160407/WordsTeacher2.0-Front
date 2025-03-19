@@ -1,11 +1,9 @@
-import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
+import getAxiosInstance from "./util/GetAxiosInstance";
 import WordList from "./model/WordList";
 import AdvancementMessage from "./uiComponents/AdvancementMessage";
 import "../style/Home.scss";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, languageId }) => {
   const [words, setWords] = useState([]);
@@ -19,17 +17,32 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       Cookies.set("languageId", languageId, { expires: 7 });
     }
 
-    axios
-      .get(`${API_BASE_URL}/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}&tests=false`, {
-        headers: { Authorization: `${Cookies.get("token") || ""}` },
-      })
-      .then((response) => setWords(response.data));
+    const fetchWords = async () => {
+      try {
+        const response = await getAxiosInstance(
+          `/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}&tests=false`,
+          "get",
+        );
+        setWords(response.data);
+      } catch (error) {
+        console.error("Error fetching words:", error);
+      }
+    };
 
-    axios
-      .get(`${API_BASE_URL}/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`, {
-        headers: { Authorization: `${Cookies.get("token") || ""}` },
-      })
-      .then((response) => setLevel(response.data.level));
+    const fetchLevel = async () => {
+      try {
+        const response = await getAxiosInstance(
+          `/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`,
+          "get",
+        );
+        setLevel(response.data.level);
+      } catch (error) {
+        console.error("Error fetching level:", error);
+      }
+    };
+
+    fetchWords();
+    fetchLevel();
   }, [wordsType, languageId]);
 
   useEffect(() => {
@@ -45,23 +58,25 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
     setTimeout(() => setAdvancement(null), 5000);
   };
 
-  const sendWords = () => {
+  const sendWords = async () => {
     const checkedWords = words.filter((word) => checkboxesRef.current[word.word]?.checked);
-    axios
-      .put(`${API_BASE_URL}/wordsTeacher/dropper`, checkedWords, {
-        headers: { Authorization: `${Cookies.get("token") || ""}` },
-      })
-      .then((response) => {
-        setWords(response.data.wordDtos);
-        if (response.data.advancement) {
-          showAdvancementMessage(response.data.advancement);
-        }
-        axios
-          .get(`${API_BASE_URL}/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`, {
-            headers: { Authorization: `${Cookies.get("token") || ""}` },
-          })
-          .then((res) => setLevel(res.data.level));
-      });
+
+    try {
+      const response = await getAxiosInstance(`/wordsTeacher/dropper`, "put", checkedWords);
+      setWords(response.data.wordDtos);
+
+      if (response.data.advancement) {
+        showAdvancementMessage(response.data.advancement);
+      }
+
+      const levelResponse = await getAxiosInstance(
+        `/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`,
+        "get",
+      );
+      setLevel(levelResponse.data.level);
+    } catch (error) {
+      console.error("Error sending words:", error);
+    }
 
     Object.values(checkboxesRef.current).forEach((checkbox) => {
       if (checkbox) checkbox.checked = false;
@@ -77,7 +92,13 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
         <option value="redemittel">Redemittels</option>
       </select>
 
-      <WordList words={words} setWords={setWords} setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords} checkboxesRef={checkboxesRef} />
+      <WordList
+        words={words}
+        setWords={setWords}
+        setUpdatedWords={setUpdatedWords}
+        setUpdatedDictionaryWords={setUpdatedDictionaryWords}
+        checkboxesRef={checkboxesRef}
+      />
 
       <button id="send-button" type="button" className="btn btn-warning" onClick={sendWords}>
         Drop

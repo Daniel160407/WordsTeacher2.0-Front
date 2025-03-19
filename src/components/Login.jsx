@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import '../style/Login.scss';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 import FormField from './forms/FormField';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import getAxiosInstance from './util/GetAxiosInstance';
 
 const Login = ({ setLoadLogInForm }) => {
     const [email, setEmail] = useState('');
@@ -19,12 +17,13 @@ const Login = ({ setLoadLogInForm }) => {
         setIsLoading(true);
 
         try {
-            const response = await axios.put(`${API_BASE_URL}/login`, { email, password });
+            const response = await getAxiosInstance('/login', 'put', { email, password });
             if (response.status === 202) {
                 Cookies.set('token', response.headers.authorization, { expires: 7 });
-                Cookies.set('userId', response.data.userId, { expires: 365 });
-                Cookies.set('plan', response.data.plan, { expires: 365 });
-                Cookies.set('languageId', response.data.languageId, { expires: 365 });
+                Cookies.set('userId', response.data.userId, { expires: 7 });
+                console.log(response.data.plan);
+                Cookies.set('plan', response.data.plan, { expires: 7 });
+                Cookies.set('languageId', response.data.languageId, { expires: 7 });
                 setLoadLogInForm(false);
             }
         } catch (error) {
@@ -45,11 +44,11 @@ const Login = ({ setLoadLogInForm }) => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/login`, { email, password, language });
+            const response = await getAxiosInstance('/login', 'post', { email, password, language });
             if (response.status === 201) {
                 const data = response.data;
-                Cookies.set('languageId', data.id, { expires: 365 });
-                Cookies.set('plan', data.plan, { expires: 365 });
+                Cookies.set('languageId', data.id, { expires: 7 });
+                Cookies.set('plan', data.plan, { expires: 7 });
                 setShowRegistration(false);
                 setMessage('Registration successful! Please log in.');
             }

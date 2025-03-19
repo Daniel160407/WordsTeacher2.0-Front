@@ -1,9 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import Cookies from "js-cookie";
 import EditWordForm from "../forms/EditWordForm";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import getAxiosInstance from "../util/GetAxiosInstance";
 
 const WordItem = ({
   word,
@@ -21,56 +19,39 @@ const WordItem = ({
   };
 
   const handleTouchStart = () => {
-    touchTimeout = setTimeout(() => {
-      handleContextMenu();
-    }, 500); // 500ms für langes Drücken
+    touchTimeout = setTimeout(handleContextMenu, 500);
   };
 
   const handleTouchEnd = () => {
-    if (touchTimeout) {
-      clearTimeout(touchTimeout);
-    }
+    if (touchTimeout) clearTimeout(touchTimeout);
   };
 
   const handleEdit = () => {
     setEditWord(word.word);
   };
 
-  const handleRemove = () => {
-    axios
-      .delete(
-        `${API_BASE_URL}/wordsTeacher/words?word=${word.word}&meaning=${
-          word.meaning
-        }&wordtype=${word.wordType}&userid=${Cookies.get(
-          "userId"
-        )}&languageid=${Cookies.get("languageId")}`,
-        {
-          headers: {
-            Authorization: `${Cookies.get("token") || ""}`,
-          },
-        }
-      )
-      .then((response) => {
-        setWords(response.data);
-        setUpdatedWords(response.data);
+  const handleRemove = async () => {
+    const userId = Cookies.get("userId");
+    const languageId = Cookies.get("languageId");
 
-        axios
-          .delete(
-            `${API_BASE_URL}/wordsTeacher/dictionary?word=${
-              word.word
-            }&meaning=${word.meaning}&userid=${Cookies.get(
-              "userId"
-            )}&languageid=${Cookies.get("languageId")}&languageid=${Cookies.get(
-              "languageId"
-            )}`,
-            {
-              headers: {
-                Authorization: `${Cookies.get("token") || ""}`,
-              },
-            }
-          )
-          .then((response) => setUpdatedDictionaryWords(response.data));
-      });
+    try {
+      const response = await getAxiosInstance(
+        `/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}&wordtype=${word.wordType}&userid=${userId}&languageid=${languageId}`,
+        "delete"
+      );
+
+      setWords(response.data);
+      setUpdatedWords(response.data);
+
+      const dictionaryResponse = await getAxiosInstance(
+        `/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${userId}&languageid=${languageId}`,
+        "delete"
+      );
+
+      setUpdatedDictionaryWords(dictionaryResponse.data);
+    } catch (error) {
+      console.error("Error deleting word:", error);
+    }
   };
 
   return (

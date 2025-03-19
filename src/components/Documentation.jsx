@@ -1,5 +1,5 @@
 import React from "react";
-import "../style/freemius/PricingCard.scss";
+import "../style/Documentation.scss";
 
 const Documentation = () => {
   return (

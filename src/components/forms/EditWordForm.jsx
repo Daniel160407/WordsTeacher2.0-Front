@@ -1,8 +1,6 @@
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useState } from "react";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import Cookies from "js-cookie";
+import getAxiosInstance from "../util/GetAxiosInstance";
 
 const EditWordForm = ({
   word,
@@ -15,7 +13,7 @@ const EditWordForm = ({
   const [meaningEditValue, setMeaningEditValue] = useState(word.meaning);
   const [wordTypeEditValue, setWordTypeEditValue] = useState(word.wordType);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const changedWord = {
       word: editValue,
       meaning: meaningEditValue,
@@ -25,34 +23,32 @@ const EditWordForm = ({
 
     const changedWordArray = [word, changedWord];
 
-    axios
-      .put(`${API_BASE_URL}/wordsTeacher/words`, changedWordArray, {
-        headers: {
-          Authorization: `${Cookies.get("token") || ""}`,
-        },
-      })
-      .then((response) => {
-        setWords(response.data);
-        setUpdatedWords(response.data);
-        setEditWord(null);
-        setEditValue("");
-        setMeaningEditValue("");
-        setWordTypeEditValue("");
+    try {
+      const wordResponse = await getAxiosInstance(
+        `/wordsTeacher/words`,
+        "put",
+        changedWordArray
+      );
 
-        return axios.put(
-          `${API_BASE_URL}/wordsTeacher/dictionary`,
-          changedWordArray,
-          {
-            headers: {
-              Authorization: `${Cookies.get("token") || ""}`,
-            },
-          }
-        );
-      })
-      .then((response) => setUpdatedDictionaryWords(response.data))
-      .catch((error) => {
-        console.error("Error updating word:", error);
-      });
+      setWords(wordResponse.data);
+      setUpdatedWords(wordResponse.data);
+      setEditWord(null);
+
+      const dictionaryResponse = await getAxiosInstance(
+        `/wordsTeacher/dictionary`,
+        "put",
+        changedWordArray
+      );
+
+      setUpdatedDictionaryWords(dictionaryResponse.data);
+
+      // Reset fields only after successful requests
+      setEditValue("");
+      setMeaningEditValue("");
+      setWordTypeEditValue("");
+    } catch (error) {
+      console.error("Error updating word:", error);
+    }
   };
 
   return (

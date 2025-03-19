@@ -1,11 +1,8 @@
-import axios from "axios";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Cookies from "js-cookie";
+import getAxiosInstance from "./util/GetAxiosInstance";
 import "../style/AddWord.scss";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-// eslint-disable-next-line react/prop-types
 const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
   const [wordData, setWordData] = useState({
     word: "",
@@ -13,21 +10,47 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     wordType: "word",
   });
   const [advancement, setAdvancement] = useState(null);
+  const [languageLevel, setLanguageLevel] = useState(
+    Cookies.get("languageLevel")
+  );
 
-  const headers = {
-    Authorization: Cookies.get("token") || "",
-  };
-  
-  const [languageLevel, setLanguageLevel] = useState(Cookies.get('languageLevel'));
+  const audioRef = useRef(null);
 
-  const playAdvancementSound = useCallback(() => {
-    new Audio("/sounds/advancement_sound.mp3").play();
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/advancement_sound.mp3");
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
   }, []);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    if (!Cookies.get("languageLevel")) {
+      Cookies.set("languageLevel", "A1", { expires: 7 });
+    }
+  }, []);
+
+  const playAdvancementSound = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing advancement sound:", error);
+      });
+    }
+  }, []);
+
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setWordData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
+
+  const handleLanguageLevelChange = useCallback((e) => {
+    const newLevel = e.target.value;
+    setLanguageLevel(newLevel);
+    Cookies.set("languageLevel", newLevel, { expires: 7 });
+  }, []);
 
   const addWord = async (event) => {
     event.preventDefault();
@@ -41,10 +64,8 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
 
     try {
       const [wordsResponse, dictionaryResponse] = await Promise.all([
-        axios.post(`${API_BASE_URL}/wordsTeacher/words`, newWord, { headers }),
-        axios.post(`${API_BASE_URL}/wordsTeacher/dictionary`, newWord, {
-          headers,
-        }),
+        getAxiosInstance("/wordsTeacher/words", "post", newWord),
+        getAxiosInstance("/wordsTeacher/dictionary", "post", newWord),
       ]);
 
       setUpdatedWords(wordsResponse.data);
@@ -57,7 +78,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
         setTimeout(() => setAdvancement(null), 5000);
       }
     } catch (error) {
-      console.error("Error adding word:", error);
+      console.error("Error adding word:", error.response?.data || error.message);
     }
   };
 
@@ -87,6 +108,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
             type="text"
             required
           />
+
           <div className="meta-data">
             <select
               name="wordType"
@@ -100,10 +122,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
             <select
               className="level"
               value={languageLevel}
-              onChange={(e) => {
-                setLanguageLevel(e.target.value);
-                Cookies.set("languageLevel", e.target.value, { expires: 365 });
-              }}
+              onChange={handleLanguageLevelChange}
             >
               <option>A1</option>
               <option>A2</option>

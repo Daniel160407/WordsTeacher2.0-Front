@@ -32,7 +32,7 @@ const WordList = ({
     <div>
       <div className="select-all-container">
         <label>
-        Select All
+          Select All
           <input
             type="checkbox"
             checked={selectAll}

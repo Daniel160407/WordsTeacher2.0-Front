@@ -1,38 +1,30 @@
-import axios from "axios";
 import { useState } from "react";
+import getAxiosInstance from "../util/GetAxiosInstance";
 import "../../style/forms/DangerLogin.scss";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const DangerLogin = ({ setDeletingPermission }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
-    const user = {
-      email,
-      password,
-    };
-    axios
-      .put(`${API_BASE_URL}/login`, user)
-      .then((response) => {
-        if (response.status === 202) {
-          setDeletingPermission(true);
-        } else {
-          setDeletingPermission(false);
-        }
-      })
-      .catch(() => {
-        alert("Incorrect email or password!");
+    try {
+      const response = await getAxiosInstance(`/login`, "put", {
+        email,
+        password,
       });
+
+      setDeletingPermission(response.status === 202);
+    } catch (error) {
+      alert("Incorrect email or password!");
+    }
   };
 
   return (
     <div className="dangerLogin">
       <form id="loginForm" onSubmit={handleLoginSubmit}>
-      <h3>Please enter email and password to delete an account</h3>
+        <h3>Please enter email and password to delete an account</h3>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input

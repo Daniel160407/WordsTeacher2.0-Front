@@ -1,29 +1,25 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
-import axios from "axios";
+import getAxiosInstance from "../util/GetAxiosInstance";
 import BlockedFeature from "../uiComponents/BlockedFeature";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const AddLanguage = ({ isBlocked, blockMessage, fetchLanguages }) => {
     const [newLanguage, setNewLanguage] = useState("");
 
-    const addLanguage = () => {
+    const addLanguage = async () => {
         if (isBlocked || !newLanguage.trim()) return;
 
-        axios
-            .post(
-                `${API_BASE_URL}/language`,
-                { language: newLanguage, userId: Cookies.get("userId") },
-                {
-                    headers: { Authorization: `${Cookies.get("token") || ""}` },
-                }
-            )
-            .then(() => {
-                setNewLanguage("");
-                fetchLanguages();
-            })
-            .catch((error) => console.error("Failed to add language:", error));
+        try {
+            await getAxiosInstance(
+                `/language`,
+                "post",
+                { language: newLanguage, userId: Cookies.get("userId") }
+            );
+            setNewLanguage("");
+            fetchLanguages();
+        } catch (error) {
+            console.error("Failed to add language:", error);
+        }
     };
 
     return (

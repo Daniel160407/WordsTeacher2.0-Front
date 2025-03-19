@@ -38,7 +38,7 @@ const PricingTable = () => {
           try {
             const plan = {
               userId: Cookies.get("userId"),
-              plan: "Ultimate",
+              plan: "ultimate",
             };
 
             const response = await axios.put(
@@ -52,8 +52,7 @@ const PricingTable = () => {
             );
 
             if (response.status === 200) {
-              Cookies.set("plan", "Ultimate", { expires: 365 });
-              console.log("Plan updated successfully!");
+              Cookies.set("plan", "ultimate", { expires: 365 });
             }
           } catch (error) {
             console.error("Failed to update plan:", error);

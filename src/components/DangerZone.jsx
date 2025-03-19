@@ -1,10 +1,8 @@
 import Cookies from "js-cookie";
 import "../style/DangerZone.scss";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import DangerLogin from "./forms/DangerLogin";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import getAxiosInstance from "./util/GetAxiosInstance";
 
 const DangerZone = () => {
   const [loadLogInForm, setLoadLogInForm] = useState(false);
@@ -12,12 +10,7 @@ const DangerZone = () => {
 
   useEffect(() => {
     if (deletingPermission) {
-      axios
-        .delete(`${API_BASE_URL}/login?userid=${Cookies.get("userId")}`, {
-          headers: {
-            Authorization: `${Cookies.get("token") || ""}`,
-          },
-        })
+      getAxiosInstance(`/login?userid=${Cookies.get("userId")}`, "delete")
         .then((response) => {
           if (response?.status === 200) {
             Cookies.remove("languageId");
@@ -26,6 +19,9 @@ const DangerZone = () => {
             Cookies.remove("userId");
             window.location.reload();
           }
+        })
+        .catch((error) => {
+          console.error("Error deleting account:", error);
         });
     }
   }, [deletingPermission]);
@@ -35,6 +31,7 @@ const DangerZone = () => {
     Cookies.remove("plan");
     Cookies.remove("token");
     Cookies.remove("userId");
+    Cookies.remove("languageLevel");
     window.location.reload();
   };
 

@@ -1,55 +1,51 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import SearchBar from "./uiComponents/SearchBar";
 import "../style/Dictionary.scss";
+import { useEffect, useState } from "react";
+import SearchBar from "./uiComponents/SearchBar";
 import DictionaryWordList from "./model/DictionaryWordList";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import getAxiosInstance from "./util/GetAxiosInstance";
 
 const Dictionary = ({ updatedWords, languageId }) => {
-    const [words, setWords] = useState([]);
-    const [search, setSearch] = useState("");
+  const [words, setWords] = useState([]);
+  const [search, setSearch] = useState("");
 
-    useEffect(() => {
-        if (languageId !== null && languageId !== undefined) {
-            Cookies.set("languageId", languageId, { expires: 7 });
-        }
+  useEffect(() => {
+    if (languageId !== null && languageId !== undefined) {
+      Cookies.set("languageId", languageId, { expires: 7 });
+    }
 
-        const fetchWords = async () => {
-            try {
-                const response = await axios.get(
-                    `${API_BASE_URL}/wordsTeacher/dictionary?type=all&userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}&tests=${false}`,
-                    {
-                        headers: {
-                            Authorization: `${Cookies.get("token") || ""}`,
-                        },
-                    }
-                );
-                setWords(response.data);
-            } catch (error) {
-                console.error("Error fetching dictionary data!", error);
-            }
-        };
+    const fetchWords = async () => {
+      try {
+        const response = await getAxiosInstance(
+          `/wordsTeacher/dictionary?type=all&userid=${Cookies.get(
+            "userId"
+          )}&languageid=${Cookies.get("languageId")}&tests=${false}`,
+          "get"
+        );
+        setWords(response.data);
+      } catch (error) {
+        console.error("Error fetching dictionary data!", error);
+      }
+    };
 
-        fetchWords();
-    }, [languageId]);
+    fetchWords();
+  }, [languageId]);
 
-    useEffect(() => {
-        if (updatedWords && updatedWords.length > 0) {
-            setWords(updatedWords);
-        }
-    }, [updatedWords]);
+  useEffect(() => {
+    if (updatedWords && updatedWords.length > 0) {
+      setWords(updatedWords);
+    }
+  }, [updatedWords]);
 
-    return (
-        <div id="dictionary" className="dictionary-container tab-pane fade">
-            <SearchBar search={search} setSearch={setSearch} />
-            <div className="word-count-label">
-                <strong>Words in Dictionary:</strong> {words.length}
-            </div>
-            <DictionaryWordList words={words} search={search} />
-        </div>
-    );
+  return (
+    <div id="dictionary" className="dictionary-container tab-pane fade">
+      <SearchBar search={search} setSearch={setSearch} />
+      <div className="word-count-label">
+        <strong>Words in Dictionary:</strong> {words.length}
+      </div>
+      <DictionaryWordList words={words} search={search} />
+    </div>
+  );
 };
 
 export default Dictionary;

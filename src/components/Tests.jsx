@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import Cookies from "js-cookie";
 import "../style/Tests.scss";
 import Timer from "./uiComponents/Timer";
 import WordInput from "./uiComponents/WordInput";
 import BlockedOverlay from "./uiComponents/BlockedOverlay";
 import TimeUpModal from "./uiComponents/TimeUpModal";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import getAxiosInstance from "./util/GetAxiosInstance";
 
 const Tests = ({ updatedWords, newLanguageId }) => {
   const [language, setLanguage] = useState("GEO");
@@ -82,13 +80,13 @@ const Tests = ({ updatedWords, newLanguageId }) => {
       }
 
       const urls = {
-        words: `${API_BASE_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-        difficult: `${API_BASE_URL}/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
-        droppedWords: `${API_BASE_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
-        dictionary: `${API_BASE_URL}/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        words: `/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+        difficult: `/wordsTeacher/words?wordstype=difficult&userid=${userId}&languageid=${languageId}&tests=true`,
+        droppedWords: `/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+        dictionary: `/wordsTeacher/dictionary?type=word&userid=${userId}&languageid=${languageId}&tests=true`,
         all: [
-          `${API_BASE_URL}/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
-          `${API_BASE_URL}/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
+          `/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
+          `/wordsTeacher/dropper?userid=${userId}&languageid=${languageId}&tests=true`,
         ],
       };
 
@@ -98,11 +96,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
             if (Array.isArray(url)) {
               const responses = await Promise.all(
                 url.map((singleUrl) =>
-                  axios.get(singleUrl, {
-                    headers: {
-                      Authorization: `${Cookies.get("token") || ""}`,
-                    },
-                  })
+                  getAxiosInstance(singleUrl, "get")
                     .then((response) => {
                       if (response?.status !== 403) {
                         Cookies.set('plan', 'ultimate', { expires: 365 });
@@ -115,11 +109,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
               const combinedData = responses.flatMap((response) => response || []);
               return { [key]: shuffleArray(combinedData) };
             } else {
-              const response = await axios.get(url, {
-                headers: {
-                  Authorization: `${Cookies.get("token") || ""}`,
-                },
-              }).catch(handleApiError);
+              const response = await getAxiosInstance(url, "get").catch(handleApiError); // Use getAxiosInstance for GET requests
               let responseData = response?.data || [];
 
               if (key === "dictionary") {
@@ -132,7 +122,6 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         );
 
         const mergedData = Object.assign({}, ...data);
-        console.log("Fetched Data:", mergedData);
         setAllWords(mergedData);
       } catch (error) {
         handleApiError(error);
