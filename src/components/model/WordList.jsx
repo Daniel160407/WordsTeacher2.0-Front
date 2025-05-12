@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import WordItem from "./WordItem";
 
 const WordList = ({
@@ -6,8 +6,8 @@ const WordList = ({
   setWords,
   setUpdatedWords,
   setUpdatedDictionaryWords,
+  checkboxesRef,
 }) => {
-  const checkboxesRef = useRef({});
   const [selectAll, setSelectAll] = useState(false);
 
   const handleSelectAll = () => {

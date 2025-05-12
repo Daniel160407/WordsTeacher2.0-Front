@@ -17,11 +17,14 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       Cookies.set("languageId", languageId, { expires: 7 });
     }
 
+    const userId = Cookies.get("userId") ?? "";
+    const langId = Cookies.get("languageId") ?? "";
+
     const fetchWords = async () => {
       try {
         const response = await getAxiosInstance(
-          `/wordsTeacher/words?wordstype=${wordsType}&userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}&tests=false`,
-          "get",
+          `/wordsTeacher/words?wordstype=${wordsType}&userid=${userId}&languageid=${langId}&tests=false`,
+          "get"
         );
         setWords(response.data);
       } catch (error) {
@@ -32,8 +35,8 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
     const fetchLevel = async () => {
       try {
         const response = await getAxiosInstance(
-          `/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`,
-          "get",
+          `/wordsTeacher/words/level?userid=${userId}&languageid=${langId}`,
+          "get"
         );
         setLevel(response.data.level);
       } catch (error) {
@@ -46,7 +49,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
   }, [wordsType, languageId]);
 
   useEffect(() => {
-    if (updatedWords !== "") {
+    if (Array.isArray(updatedWords) && updatedWords.length > 0) {
       setWords(updatedWords);
     }
   }, [updatedWords]);
@@ -59,7 +62,7 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
   };
 
   const sendWords = async () => {
-    const checkedWords = words.filter((word) => checkboxesRef.current[word.word]?.checked);
+    const checkedWords = words.filter((word) => checkboxesRef.current?.[word.word]?.checked);
 
     try {
       const response = await getAxiosInstance(`/wordsTeacher/dropper`, "put", checkedWords);
@@ -69,9 +72,12 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
         showAdvancementMessage(response.data.advancement);
       }
 
+      const userId = Cookies.get("userId") ?? "";
+      const langId = Cookies.get("languageId") ?? "";
+
       const levelResponse = await getAxiosInstance(
-        `/wordsTeacher/words/level?userid=${Cookies.get("userId")}&languageid=${Cookies.get("languageId")}`,
-        "get",
+        `/wordsTeacher/words/level?userid=${userId}&languageid=${langId}`,
+        "get"
       );
       setLevel(levelResponse.data.level);
     } catch (error) {
@@ -86,7 +92,8 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
   return (
     <div id="words" className="tab-pane fade show active">
       <h1>Level {level}</h1>
-      <select onChange={(e) => setWordsType(e.target.value)}>
+
+      <select onChange={(e) => setWordsType(e.target.value)} value={wordsType}>
         <option value="word">Words</option>
         <option value="difficult">Difficult Verbs</option>
         <option value="redemittel">Redemittels</option>

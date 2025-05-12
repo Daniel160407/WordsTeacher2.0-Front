@@ -73,11 +73,7 @@
           left: 50%;
           width: 300%;
           height: 300%;
-          background: radial-gradient(
-            circle,
-            rgba(255, 107, 107, 0.2),
-            transparent
-          );
+          background: radial-gradient(circle, rgba(255, 107, 107, 0.2), transparent);
           transform: translate(-50%, -50%) scale(0);
           transition: transform 0.5s ease;
           border-radius: 50%;
@@ -100,8 +96,37 @@
     }
   }
 
-  h1 {
-    text-align: center;
+  .results-feedback {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+
+    .answers {
+      display: flex;
+      justify-content: start;
+      width: 100%;
+    }
+
+    .reload {
+      display: flex;
+      justify-content: end;
+
+      img[alt="reload"] {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        filter: invert(1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: rotate(90deg);
+        }
+
+        &:active {
+          transform: rotate(360deg);
+        }
+      }
+    }
   }
 
   select {

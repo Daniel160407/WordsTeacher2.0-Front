@@ -70,6 +70,40 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleReloadClick = () => {
+    const filteredWords = 
+      wordsList === "dictionary" && firstLetter
+        ? allWords.dictionary.filter(
+            item => item.word[0].toUpperCase() === firstLetter ||
+            ["der", "die", "das", "sich"].some(
+              prefix => item.word.toLowerCase().startsWith(prefix + " ") &&
+              item.word[4]?.toUpperCase() === firstLetter
+            )
+          )
+        : allWords[wordsList];
+
+    const shuffledWords = shuffleArray(filteredWords || []);
+
+    setWords(
+      shuffledWords.map(item => 
+        language === "GEO" ? item.word : item.meaning
+      )
+    );
+    setMeanings(
+      shuffledWords.map(item => 
+        language === "GEO" ? item.meaning : item.word
+      )
+    );
+    setInputs({});
+    setOverallFeedback({});
+    setCorrectAnswersCount(0);
+    setAnswersChecked(false);
+    
+    if(timerChecked) {
+      setTimerTime(60);
+    }
+  };
+
   useEffect(() => {
     const fetchAllData = async () => {
       const userId = Cookies.get('userId');
@@ -109,7 +143,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
               const combinedData = responses.flatMap((response) => response || []);
               return { [key]: shuffleArray(combinedData) };
             } else {
-              const response = await getAxiosInstance(url, "get").catch(handleApiError); // Use getAxiosInstance for GET requests
+              const response = await getAxiosInstance(url, "get").catch(handleApiError);
               let responseData = response?.data || [];
 
               if (key === "dictionary") {
@@ -278,9 +312,19 @@ const Tests = ({ updatedWords, newLanguageId }) => {
 
         <div ref={resultsRef}>
           {answersChecked && (
-            <p>
-              Correct Answers: {correctAnswersCount} out of {words.length}
-            </p>
+            <div className="results-feedback">
+              <p className="answers">
+                Correct Answers: {correctAnswersCount} out of {words.length}
+              </p>
+              <div className="reload">
+                <img 
+                  src="/svg/reload.svg" 
+                  alt="reload" 
+                  onClick={handleReloadClick}
+                  className="reload-icon"
+                />
+              </div>
+            </div>
           )}
         </div>
 

@@ -21,7 +21,6 @@ const Login = ({ setLoadLogInForm }) => {
             if (response.status === 202) {
                 Cookies.set('token', response.headers.authorization, { expires: 7 });
                 Cookies.set('userId', response.data.userId, { expires: 7 });
-                console.log(response.data.plan);
                 Cookies.set('plan', response.data.plan, { expires: 7 });
                 Cookies.set('languageId', response.data.languageId, { expires: 7 });
                 setLoadLogInForm(false);
