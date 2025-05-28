@@ -61,7 +61,6 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         }
         return lowerWord;
       };
-
       return normalizeWord(a.word).localeCompare(normalizeWord(b.word));
     });
   };
@@ -83,35 +82,21 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         : allWords[wordsList];
 
     const shuffledWords = shuffleArray(filteredWords || []);
-
-    setWords(
-      shuffledWords.map(item => 
-        language === "GEO" ? item.word : item.meaning
-      )
-    );
-    setMeanings(
-      shuffledWords.map(item => 
-        language === "GEO" ? item.meaning : item.word
-      )
-    );
+    setWords(shuffledWords.map(item => language === "GEO" ? item.word : item.meaning));
+    setMeanings(shuffledWords.map(item => language === "GEO" ? item.meaning : item.word));
     setInputs({});
     setOverallFeedback({});
     setCorrectAnswersCount(0);
     setAnswersChecked(false);
     
-    if(timerChecked) {
-      setTimerTime(60);
-    }
+    if (timerChecked) setTimerTime(60);
   };
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const userId = Cookies.get('userId');
-      const languageId = newLanguageId !== null ? newLanguageId : Cookies.get('languageId');
-      if (!userId) {
-        console.error("User ID is missing or invalid.");
-        return;
-      }
+      const userId = Cookies.get("userId");
+      const languageId = newLanguageId !== null ? newLanguageId : Cookies.get("languageId");
+      if (!userId) return;
 
       const urls = {
         words: `/wordsTeacher/words?wordstype=word&userid=${userId}&languageid=${languageId}&tests=true`,
@@ -131,32 +116,25 @@ const Tests = ({ updatedWords, newLanguageId }) => {
               const responses = await Promise.all(
                 url.map((singleUrl) =>
                   getAxiosInstance(singleUrl, "get")
-                    .then((response) => {
-                      if (response?.status !== 403) {
-                        Cookies.set('plan', 'ultimate', { expires: 365 });
+                    .then((res) => {
+                      if (res?.status !== 403) {
+                        Cookies.set("plan", "ultimate", { expires: 365 });
                       }
-                      return response.data || [];
+                      return res.data || [];
                     })
                     .catch(handleApiError)
                 )
               );
-              const combinedData = responses.flatMap((response) => response || []);
-              return { [key]: shuffleArray(combinedData) };
+              return { [key]: shuffleArray(responses.flat()) };
             } else {
-              const response = await getAxiosInstance(url, "get").catch(handleApiError);
-              let responseData = response?.data || [];
-
-              if (key === "dictionary") {
-                responseData = sortDictionaryWords(responseData);
-              }
-
+              const res = await getAxiosInstance(url, "get").catch(handleApiError);
+              let responseData = res?.data || [];
+              if (key === "dictionary") responseData = sortDictionaryWords(responseData);
               return { [key]: shuffleArray(responseData) };
             }
           })
         );
-
-        const mergedData = Object.assign({}, ...data);
-        setAllWords(mergedData);
+        setAllWords(Object.assign({}, ...data));
       } catch (error) {
         handleApiError(error);
       }
@@ -182,17 +160,8 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         : allWords[wordsList];
 
     const shuffledWords = shuffleArray(filteredWords);
-
-    setWords(
-      shuffledWords.map((item) =>
-        language === "GEO" ? item.word : item.meaning
-      )
-    );
-    setMeanings(
-      shuffledWords.map((item) =>
-        language === "GEO" ? item.meaning : item.word
-      )
-    );
+    setWords(shuffledWords.map((item) => language === "GEO" ? item.word : item.meaning));
+    setMeanings(shuffledWords.map((item) => language === "GEO" ? item.meaning : item.word));
     setInputs({});
     setOverallFeedback({});
     setCorrectAnswersCount(0);
@@ -202,41 +171,25 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   useEffect(() => {
     if (updatedWords.length > 0) {
       const shuffledWords = shuffleArray(updatedWords);
-      setWords(
-        shuffledWords.map((item) =>
-          language === "GEO" ? item.word : item.meaning
-        )
-      );
-      setMeanings(
-        shuffledWords.map((item) =>
-          language === "GEO" ? item.meaning : item.word
-        )
-      );
+      setWords(shuffledWords.map((item) => language === "GEO" ? item.word : item.meaning));
+      setMeanings(shuffledWords.map((item) => language === "GEO" ? item.meaning : item.word));
     }
   }, [updatedWords, language]);
 
   const handleInputChange = (e, index) => {
     const { value } = e.target;
-    setInputs((prevInputs) => ({ ...prevInputs, [index]: value }));
+    setInputs((prev) => ({ ...prev, [index]: value }));
   };
 
-  const handleChangeLanguage = (e) => {
-    setLanguage(e.target.value);
-  };
-
-  const handleChangeWords = (e) => {
-    setWordsList(e.target.value);
-  };
+  const handleChangeLanguage = (e) => setLanguage(e.target.value);
+  const handleChangeWords = (e) => setWordsList(e.target.value);
 
   const checkAnswers = () => {
     const feedback = {};
     let correctCount = 0;
 
     words.forEach((word, index) => {
-      if (
-        inputs[index] &&
-        inputs[index].toLowerCase() === meanings[index].toLowerCase()
-      ) {
+      if (inputs[index]?.toLowerCase() === meanings[index].toLowerCase()) {
         feedback[index] = "✅";
         correctCount++;
       } else {
@@ -253,20 +206,24 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     }
   };
 
-  const handleTimeUp = () => {
-    setShowTimeUpModal(true);
+  const handleTimeUp = () => setShowTimeUpModal(true);
+  const closeTimeUpModal = () => setShowTimeUpModal(false);
+
+  const wordCounts = words.reduce((acc, word) => {
+    acc[word] = (acc[word] || 0) + 1;
+    return acc;
+  }, {});
+
+  const getFirstLetterHint = (index) => {
+    const meaning = meanings[index];
+    const word = words[index];
+    return language === "DEU" && wordCounts[word] > 1 ? meaning[0] : "";
   };
 
-  const closeTimeUpModal = () => {
-    setShowTimeUpModal(false);
-  };
 
   return (
     <div id="tests" className={`tab-pane fade ${isBlocked ? "blocked" : ""}`}>
-      {isBlocked && (
-        <BlockedOverlay message={blockMessage} onUpgrade={scrollToBottom} />
-      )}
-
+      {isBlocked && <BlockedOverlay message={blockMessage} onUpgrade={scrollToBottom} />}
       {showTimeUpModal && <TimeUpModal onClose={closeTimeUpModal} />}
 
       <div>
@@ -284,15 +241,10 @@ const Tests = ({ updatedWords, newLanguageId }) => {
         </select>
 
         {wordsList === "dictionary" && (
-          <select
-            value={firstLetter}
-            onChange={(e) => setFirstLetter(e.target.value)}
-          >
+          <select value={firstLetter} onChange={(e) => setFirstLetter(e.target.value)}>
             <option value="">Select Letter</option>
             {"ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ".split("").map((letter) => (
-              <option key={letter} value={letter}>
-                {letter}
-              </option>
+              <option key={letter} value={letter}>{letter}</option>
             ))}
           </select>
         )}
@@ -306,16 +258,12 @@ const Tests = ({ updatedWords, newLanguageId }) => {
           />
         </div>
 
-        {timerChecked && (
-          <Timer timerTime={timerTime} setTimerTime={setTimerTime} onTimeUp={handleTimeUp} />
-        )}
+        {timerChecked && <Timer timerTime={timerTime} setTimerTime={setTimerTime} onTimeUp={handleTimeUp} />}
 
         <div ref={resultsRef}>
           {answersChecked && (
             <div className="results-feedback">
-              <p className="answers">
-                Correct Answers: {correctAnswersCount} out of {words.length}
-              </p>
+              <p className="answers">Correct Answers: {correctAnswersCount} out of {words.length}</p>
               <div className="reload">
                 <img 
                   src="/svg/reload.svg" 
@@ -336,8 +284,10 @@ const Tests = ({ updatedWords, newLanguageId }) => {
             onChange={(e) => handleInputChange(e, index)}
             disabled={isBlocked}
             feedback={overallFeedback[index]}
+            firstLetterHint={getFirstLetterHint(index)}
           />
         ))}
+
         <button
           type="button"
           className="btn btn-warning"

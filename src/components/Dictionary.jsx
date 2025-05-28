@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import SearchBar from "./uiComponents/SearchBar";
 import DictionaryWordList from "./model/DictionaryWordList";
 import getAxiosInstance from "./util/GetAxiosInstance";
+import WordLevelStats from "./uiComponents/WordLevelStates";
 
 const Dictionary = ({ updatedWords, languageId }) => {
   const [words, setWords] = useState([]);
@@ -43,6 +44,9 @@ const Dictionary = ({ updatedWords, languageId }) => {
       <div className="word-count-label">
         <strong>Words in Dictionary:</strong> {words.length}
       </div>
+      
+      <WordLevelStats words={words} />
+      
       <DictionaryWordList words={words} search={search} />
     </div>
   );
