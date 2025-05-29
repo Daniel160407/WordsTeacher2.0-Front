@@ -1,5 +1,74 @@
-.nav {
-    a {
+.navbar-container {
+    background-color: #222;
+    padding: 0.5rem 1rem;
+
+    .menu-toggle {
+        display: none;
+        background: none;
         color: white;
+        font-size: 1.5rem;
+        border: none;
+        cursor: pointer;
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        list-style: none;
+        padding-left: 0;
+
+        a {
+            color: white;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .menu-toggle {
+            display: block;
+        }
+
+        .nav {
+            flex-direction: column;
+            display: none;
+
+            &.open {
+                display: flex;
+            }
+
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+        }
+    }
+}
+
+.navbar-nav .nav-link {
+  color: white;
+}
+
+.navbar-toggler {
+    color: white;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.icon {
+    width: 20px;
+}
+
+.wttitle {
+    color: #ffc107;
+
+    &:active {
+        color: #bf9003;
+    }
+
+    &::after {
+        color: #bf9003;
     }
 }

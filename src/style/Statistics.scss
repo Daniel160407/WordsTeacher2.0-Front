@@ -1,0 +1,321 @@
+/* Dark Gray Theme Variables */
+$darker-gray: #121212;
+$dark-gray: #1e1e1e;
+$medium-gray: #2d2d2d;
+$light-gray: #3d3d3d;
+$text-primary: #f0f0f0;
+$text-secondary: #b0b0b0;
+$accent-gray: #4a4a4a;
+$border-gray: #333333;
+$hover-gray: #2a2a2a;
+$shadow-gray: rgba(0, 0, 0, 0.25);
+
+/* Main Container */
+.statistics-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: $darker-gray;
+  color: $text-primary;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.statistics-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+  
+  h2 {
+    font-size: 2rem;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+  
+  p {
+    font-size: 1rem;
+    color: $text-secondary;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+}
+
+/* Statistic Cards Grid */
+.statistics-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Statistic Card */
+.statistic-card {
+  background: $dark-gray;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px $shadow-gray;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  border: 1px solid $border-gray;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    background: lighten($dark-gray, 3%);
+    border-color: $light-gray;
+  }
+}
+
+.statistic-card-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, $medium-gray 0%, $light-gray 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.25rem;
+  color: $text-primary;
+  font-size: 1.25rem;
+}
+
+.statistic-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.statistic-card-value {
+  font-size: 2rem;
+  font-weight: 600;
+  color: $text-primary;
+  line-height: 1.2;
+}
+
+.statistic-card-title {
+  font-size: 0.875rem;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Advancements Section */
+.statistics-advancements {
+  background: $dark-gray;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 12px $shadow-gray;
+  border: 1px solid $border-gray;
+}
+
+.statistics-section-header {
+  margin-bottom: 1.5rem;
+  position: relative;
+  
+  h3 {
+    font-size: 1.25rem;
+    color: $text-primary;
+    display: inline-block;
+    background: $dark-gray;
+    padding-right: 1.25rem;
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+  }
+}
+
+.statistics-decorative-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent 0%, $border-gray 30%, $border-gray 70%, transparent 100%);
+  z-index: 1;
+}
+
+/* Advancement Badges */
+.advancement-badge {
+  background: $medium-gray;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  transition: all 0.25s ease;
+  border: 1px solid $border-gray;
+  
+  &:hover {
+    transform: translateX(6px);
+    background: $hover-gray;
+    border-color: $light-gray;
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.advancement-badge-icon {
+  font-size: 1.25rem;
+  margin-right: 1rem;
+  min-width: 2rem;
+  text-align: center;
+  color: $text-primary;
+}
+
+.advancement-badge-text {
+  font-size: 0.9375rem;
+  color: $text-primary;
+  font-weight: 500;
+}
+
+/* Empty State */
+.statistics-empty {
+  text-align: center;
+  padding: 2.5rem;
+  
+  .statistics-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: $text-secondary;
+    opacity: 0.5;
+  }
+  
+  p {
+    color: $text-secondary;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
+/* Loading State */
+.statistics-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  
+  p {
+    margin-top: 1.5rem;
+    color: $text-secondary;
+    font-weight: 400;
+  }
+}
+
+.statistics-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba($text-secondary, 0.2);
+  border-top: 3px solid $text-primary;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Error State */
+.statistics-error {
+  text-align: center;
+  padding: 2.5rem;
+  
+  .statistics-error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: $text-secondary;
+  }
+  
+  h3 {
+    color: $text-primary;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  p {
+    color: $text-secondary;
+    font-weight: 400;
+  }
+}
+
+.level-stats-container {
+  background-color: $dark-gray;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  border: 1px solid #555;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .stats-title {
+    color: #ecf0f1;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .additional-stats {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background-color: $medium-gray;
+    border-radius: 5px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+
+    &:hover {
+      background-color: $light-gray;
+      transform: translateY(-2px);
+    }
+  }
+
+  .stat-label {
+    color: #bdc3c7;
+    font-size: 0.8rem;
+    margin-bottom: 3px;
+  }
+
+  .stat-value {
+    color: #ecf0f1;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .statistics-container {
+    padding: 1.5rem;
+  }
+  
+  .statistics-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .statistic-card {
+    padding: 1.25rem;
+  }
+}
