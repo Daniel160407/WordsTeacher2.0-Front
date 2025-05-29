@@ -1,4 +1,3 @@
-/* Dark Gray Theme Variables */
 $darker-gray: #121212;
 $dark-gray: #1e1e1e;
 $medium-gray: #2d2d2d;
@@ -10,23 +9,21 @@ $border-gray: #333333;
 $hover-gray: #2a2a2a;
 $shadow-gray: rgba(0, 0, 0, 0.25);
 
-/* Main Container */
 .statistics-container {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   background-color: $darker-gray;
   color: $text-primary;
   min-height: 100vh;
 }
 
-/* Header Styles */
 .statistics-header {
   text-align: center;
   margin-bottom: 3rem;
   padding: 0 1rem;
-  
+
   h2 {
     font-size: 2rem;
     color: $text-primary;
@@ -34,7 +31,7 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
     font-weight: 600;
     letter-spacing: -0.025em;
   }
-  
+
   p {
     font-size: 1rem;
     color: $text-secondary;
@@ -43,7 +40,6 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   }
 }
 
-/* Statistic Cards Grid */
 .statistics-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -51,7 +47,6 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   margin-bottom: 3rem;
 }
 
-/* Statistic Card */
 .statistic-card {
   background: $dark-gray;
   border-radius: 0.75rem;
@@ -61,7 +56,7 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   align-items: center;
   transition: all 0.3s ease;
   border: 1px solid $border-gray;
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
@@ -104,7 +99,6 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   margin-top: 0.25rem;
 }
 
-/* Advancements Section */
 .statistics-advancements {
   background: $dark-gray;
   border-radius: 0.75rem;
@@ -116,7 +110,7 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
 .statistics-section-header {
   margin-bottom: 1.5rem;
   position: relative;
-  
+
   h3 {
     font-size: 1.25rem;
     color: $text-primary;
@@ -135,11 +129,16 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent 0%, $border-gray 30%, $border-gray 70%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    $border-gray 30%,
+    $border-gray 70%,
+    transparent 100%
+  );
   z-index: 1;
 }
 
-/* Advancement Badges */
 .advancement-badge {
   background: $medium-gray;
   border-radius: 0.5rem;
@@ -149,13 +148,13 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   margin-bottom: 0.75rem;
   transition: all 0.25s ease;
   border: 1px solid $border-gray;
-  
+
   &:hover {
     transform: translateX(6px);
     background: $hover-gray;
     border-color: $light-gray;
   }
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -175,18 +174,17 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   font-weight: 500;
 }
 
-/* Empty State */
 .statistics-empty {
   text-align: center;
   padding: 2.5rem;
-  
+
   .statistics-empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
     color: $text-secondary;
     opacity: 0.5;
   }
-  
+
   p {
     color: $text-secondary;
     font-size: 1rem;
@@ -194,14 +192,13 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   }
 }
 
-/* Loading State */
 .statistics-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 300px;
-  
+
   p {
     margin-top: 1.5rem;
     color: $text-secondary;
@@ -218,23 +215,22 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   animation: spin 0.8s linear infinite;
 }
 
-/* Error State */
 .statistics-error {
   text-align: center;
   padding: 2.5rem;
-  
+
   .statistics-error-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
     color: $text-secondary;
   }
-  
+
   h3 {
     color: $text-primary;
     margin-bottom: 0.5rem;
     font-weight: 600;
   }
-  
+
   p {
     color: $text-secondary;
     font-weight: 400;
@@ -299,22 +295,24 @@ $shadow-gray: rgba(0, 0, 0, 0.25);
   }
 }
 
-/* Animations */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .statistics-container {
     padding: 1.5rem;
   }
-  
+
   .statistics-cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .statistic-card {
     padding: 1.25rem;
   }

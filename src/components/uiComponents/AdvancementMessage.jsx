@@ -1,3 +1,5 @@
+import '../../style/AdvancementMessage.scss';
+
 const AdvancementMessage = ({ message }) => {
   return (
     <div className="advancement-message">

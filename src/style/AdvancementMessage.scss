@@ -1,0 +1,17 @@
+.advancement-message {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  transition: opacity 1s ease-out;
+  z-index: 1000;
+}
+
+.advancement-message.hide {
+  opacity: 0;
+}

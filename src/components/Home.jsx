@@ -5,7 +5,7 @@ import WordList from "./model/WordList";
 import AdvancementMessage from "./uiComponents/AdvancementMessage";
 import "../style/Home.scss";
 
-const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, languageId }) => {
+const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, dayStreakAdvancement, languageId }) => {
   const [words, setWords] = useState([]);
   const [level, setLevel] = useState(0);
   const [wordsType, setWordsType] = useState("word");
@@ -53,6 +53,10 @@ const Home = ({ updatedWords, setUpdatedWords, setUpdatedDictionaryWords, langua
       setWords(updatedWords);
     }
   }, [updatedWords]);
+
+  useEffect(() => {
+    showAdvancementMessage(dayStreakAdvancement);
+  }, [dayStreakAdvancement]);
 
   const showAdvancementMessage = (message) => {
     setAdvancement(message);

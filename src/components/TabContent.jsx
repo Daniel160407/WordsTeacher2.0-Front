@@ -9,6 +9,7 @@ const TabContent = ({updatedLanguageWords, languageId}) => {
     const [updatedWords, setUpdatedWords] = useState([]);
     const [updatedDictionaryWords, setUpdatedDictionaryWords] = useState([]);
     const [dictionaryWords, setDictionaryWords] = useState([]);
+    const [advancement, setAdvancement] = useState('');
 
     useEffect(() => {
         setUpdatedWords(updatedLanguageWords);
@@ -16,10 +17,10 @@ const TabContent = ({updatedLanguageWords, languageId}) => {
 
     return (
         <div className="tab-content">
-            <Home updatedWords={updatedWords} setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords} languageId={languageId}/>
+            <Home updatedWords={updatedWords} setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords} dayStreakAdvancement={advancement} languageId={languageId}/>
             <AddWord setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords}/>
             <Tests updatedWords={updatedWords} newLanguageId={languageId}/>
-            <Dictionary setDictionaryWords={setDictionaryWords} updatedWords={updatedDictionaryWords} langueageId={languageId}/>
+            <Dictionary setDictionaryWords={setDictionaryWords} updatedWords={updatedDictionaryWords} setAdvancement={setAdvancement} langueageId={languageId}/>
             <Statistics dictionaryWords={dictionaryWords} />
         </div>
     );
