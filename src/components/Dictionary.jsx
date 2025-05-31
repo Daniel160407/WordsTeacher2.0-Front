@@ -6,7 +6,7 @@ import DictionaryWordList from "./model/DictionaryWordList";
 import getAxiosInstance from "./util/GetAxiosInstance";
 import WordLevelStats from "./uiComponents/WordLevelStates";
 
-const Dictionary = ({ setDictionaryWords, updatedWords, setAdvancement, languageId }) => {
+const Dictionary = ({ setDictionaryWords, updatedWords, languageId }) => {
   const [words, setWords] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -23,9 +23,8 @@ const Dictionary = ({ setDictionaryWords, updatedWords, setAdvancement, language
           )}&languageid=${Cookies.get("languageId")}&tests=${false}`,
           "get"
         );
-        setWords(response.data.dictionaryDtos);
-        setDictionaryWords(response.data.dictionaryDtos);
-        setAdvancement(response.data.advancement);
+        setWords(response.data);
+        setDictionaryWords(response.data);
       } catch (error) {
         console.error("Error fetching dictionary data!", error);
       }

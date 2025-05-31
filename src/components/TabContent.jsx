@@ -20,8 +20,8 @@ const TabContent = ({updatedLanguageWords, languageId}) => {
             <Home updatedWords={updatedWords} setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords} dayStreakAdvancement={advancement} languageId={languageId}/>
             <AddWord setUpdatedWords={setUpdatedWords} setUpdatedDictionaryWords={setUpdatedDictionaryWords}/>
             <Tests updatedWords={updatedWords} newLanguageId={languageId}/>
-            <Dictionary setDictionaryWords={setDictionaryWords} updatedWords={updatedDictionaryWords} setAdvancement={setAdvancement} langueageId={languageId}/>
-            <Statistics dictionaryWords={dictionaryWords} />
+            <Dictionary setDictionaryWords={setDictionaryWords} updatedWords={updatedDictionaryWords} langueageId={languageId}/>
+            <Statistics dictionaryWords={dictionaryWords} setAdvancement={setAdvancement} />
         </div>
     );
 }

@@ -4,38 +4,61 @@ import getAxiosInstance from './util/GetAxiosInstance';
 import StatisticCard from './uiComponents/StatisticCard';
 import AdvancementBadge from './uiComponents/AdvancementBage';
 import '../style/Statistics.scss';
-import { FaBook, FaFire, FaSync } from 'react-icons/fa';
+import { FaBook, FaFire, FaSync, FaTrophy, FaLock } from 'react-icons/fa';
 import WordLevelStats from './uiComponents/WordLevelStates';
 
-const Statistics = ({ dictionaryWords }) => {
+const Statistics = ({ dictionaryWords, setAdvancement }) => {
   const [statistics, setStatistics] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [allAdvancements, setAllAdvancements] = useState([]);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStatistics = async () => {
+      setIsLoading(true);
       try {
-        const response = await getAxiosInstance(
-          `/statistics?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
-          'get'
-        );
-        setStatistics(response.data);
+        const [statsResponse, advancementsResponse] = await Promise.all([
+          getAxiosInstance(
+            `/statistics?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
+            'get'
+          ),
+          getAxiosInstance('/statistics/advancements', 'get')
+        ]);
+        
+        setStatistics(statsResponse.data);
+        setAdvancement(statsResponse.data.advancement);
+        setAllAdvancements(advancementsResponse.data);
       } catch (err) {
-        setError('Failed to load statistics');
-        console.error(err);
+        setError('Failed to load statistics data');
+        console.error('Statistics loading error:', err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchStatistics();
-  }, []);
+  }, [setAdvancement]);
 
-  if (loading) {
+  const categorizeAdvancements = (advancements) => {
+    return {
+      words: advancements.filter(adv => 
+        adv.includes('word') || adv.includes('Word')
+      ),
+      cycles: advancements.filter(adv => 
+        adv.includes('cycle') || adv.includes('Cycle')
+      ),
+      streaks: advancements.filter(adv => 
+        adv.includes('day') || adv.includes('week') || 
+        adv.includes('month') || adv.includes('year')
+      )
+    };
+  };
+
+  if (isLoading) {
     return (
       <div className="statistics-loading">
-        <div className="statistics-spinner"></div>
-        <p>Loading your achievements...</p>
+        <div className="loading-spinner"></div>
+        <p>Loading your statistics...</p>
       </div>
     );
   }
@@ -52,6 +75,9 @@ const Statistics = ({ dictionaryWords }) => {
 
   if (!statistics) return null;
 
+  const earnedAdvancements = statistics.advancements || [];
+  const { words, cycles, streaks } = categorizeAdvancements(allAdvancements);
+
   return (
     <div id="statistics" className="statistics-container tab-pane fade">
       <div className="statistics-header">
@@ -64,37 +90,91 @@ const Statistics = ({ dictionaryWords }) => {
           title="Words Learned" 
           value={statistics.wordsLearned} 
           icon={<FaBook />} 
+          loading={isLoading}
         />
         <StatisticCard 
           title="Cycles Completed" 
           value={statistics.cycles} 
           icon={<FaSync />} 
+          loading={isLoading}
         />
         <StatisticCard 
           title="Day Streak" 
           value={statistics.dayStreak} 
           icon={<FaFire />} 
+          loading={isLoading}
         />
         <WordLevelStats words={dictionaryWords} />
       </div>
 
       <div className="statistics-advancements">
         <div className="statistics-section-header">
-          <h3>Your Advancements</h3>
+          <h3>Your Achievements</h3>
           <div className="statistics-decorative-line"></div>
         </div>
         
         <div className="statistics-advancements-list">
-          {statistics.advancements?.length > 0 ? (
-            statistics.advancements.map((advancement, index) => (
-              <AdvancementBadge key={index} text={advancement} />
+          {earnedAdvancements.length > 0 ? (
+            earnedAdvancements.map((advancement, index) => (
+              <AdvancementBadge 
+                key={`earned-${index}`} 
+                text={advancement} 
+                icon={<FaTrophy />}
+                earned={true}
+              />
             ))
           ) : (
             <div className="statistics-empty">
               <div className="statistics-empty-icon">📭</div>
-              <p>No advancements yet. Keep learning!</p>
+              <p>No achievements yet. Keep learning!</p>
             </div>
           )}
+        </div>
+      </div>
+
+      <div className="statistics-all-advancements">
+        <div className="statistics-section-header">
+          <h3>Available Advancements</h3>
+          <div className="statistics-decorative-line"></div>
+        </div>
+
+        <div className="advancement-category">
+          <h4>Word Milestones</h4>
+          <div className="advancement-category-list">
+            {words.map((advancement, index) => (
+              <AdvancementBadge
+                key={`words-${index}`}
+                text={advancement}
+                earned={earnedAdvancements.includes(advancement)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="advancement-category">
+          <h4>Cycle Milestones</h4>
+          <div className="advancement-category-list">
+            {cycles.map((advancement, index) => (
+              <AdvancementBadge
+                key={`cycles-${index}`}
+                text={advancement}
+                earned={earnedAdvancements.includes(advancement)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="advancement-category">
+          <h4>Streak Milestones</h4>
+          <div className="advancement-category-list">
+            {streaks.map((advancement, index) => (
+              <AdvancementBadge
+                key={`streaks-${index}`}
+                text={advancement}
+                earned={earnedAdvancements.includes(advancement)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
