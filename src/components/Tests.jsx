@@ -129,7 +129,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
             } else {
               const res = await getAxiosInstance(url, "get").catch(handleApiError);
               let responseData = res?.data || [];
-              if (key === "dictionary") responseData = sortDictionaryWords(responseData.dictionaryDtos);
+              if (key === "dictionary") responseData = sortDictionaryWords(responseData);
               return { [key]: shuffleArray(responseData) };
             }
           })
