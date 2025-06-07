@@ -6,6 +6,7 @@ import getAxiosInstance from "../util/GetAxiosInstance";
 const WordItem = ({
   word,
   setWords,
+  wordType,
   setUpdatedWords,
   setUpdatedDictionaryWords,
   checkboxesRef,
@@ -14,12 +15,28 @@ const WordItem = ({
   const [editWord, setEditWord] = useState(null);
   let touchTimeout = null;
 
-  const handleContextMenu = () => {
+  const getMarkerColor = () => {
+    switch (wordType) {
+      case "Verb":
+        return "#4CAF50";
+      case "Adjektiv":
+        return "#9C27B0";
+      case "Substantiv":
+        return "#2196F3";
+      default:
+        return "#fff700";
+    }
+  };
+
+  const handleContextMenu = (e) => {
+    e.preventDefault();
     setVisibleWord(word.word === visibleWord ? null : word.word);
   };
 
   const handleTouchStart = () => {
-    touchTimeout = setTimeout(handleContextMenu, 500);
+    touchTimeout = setTimeout(() => {
+      setVisibleWord(word.word === visibleWord ? null : word.word);
+    }, 500);
   };
 
   const handleTouchEnd = () => {
@@ -39,7 +56,6 @@ const WordItem = ({
         `/wordsTeacher/words?word=${word.word}&meaning=${word.meaning}&wordtype=${word.wordType}&userid=${userId}&languageid=${languageId}`,
         "delete"
       );
-
       setWords(response.data);
       setUpdatedWords(response.data);
 
@@ -47,7 +63,6 @@ const WordItem = ({
         `/wordsTeacher/dictionary?word=${word.word}&meaning=${word.meaning}&userid=${userId}&languageid=${languageId}`,
         "delete"
       );
-
       setUpdatedDictionaryWords(dictionaryResponse.data);
     } catch (error) {
       console.error("Error deleting word:", error);
@@ -57,10 +72,8 @@ const WordItem = ({
   return (
     <div
       className="word"
-      onContextMenu={(e) => {
-        e.preventDefault();
-        handleContextMenu();
-      }}
+      style={{ borderLeft: `3px solid ${getMarkerColor()}` }} // Only added line
+      onContextMenu={handleContextMenu}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
