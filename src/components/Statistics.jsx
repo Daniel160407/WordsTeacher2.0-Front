@@ -1,11 +1,11 @@
-import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
-import getAxiosInstance from './util/GetAxiosInstance';
-import StatisticCard from './uiComponents/StatisticCard';
-import AdvancementBadge from './uiComponents/AdvancementBage';
-import '../style/Statistics.scss';
-import { FaBook, FaFire, FaSync, FaTrophy, FaLock } from 'react-icons/fa';
-import WordLevelStats from './uiComponents/WordLevelStates';
+import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import getAxiosInstance from "./util/GetAxiosInstance";
+import StatisticCard from "./uiComponents/StatisticCard";
+import AdvancementBadge from "./uiComponents/AdvancementBage";
+import "../style/Statistics.scss";
+import { FaBook, FaFire, FaSync, FaTrophy, FaLock } from "react-icons/fa";
+import WordLevelStats from "./uiComponents/WordLevelStates";
 
 const Statistics = ({ dictionaryWords, setAdvancement }) => {
   const [statistics, setStatistics] = useState(null);
@@ -19,18 +19,20 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
       try {
         const [statsResponse, advancementsResponse] = await Promise.all([
           getAxiosInstance(
-            `/statistics?userid=${Cookies.get('userId')}&languageid=${Cookies.get('languageId')}`,
-            'get'
+            `/statistics?userid=${Cookies.get(
+              "userId"
+            )}&languageid=${Cookies.get("languageId")}`,
+            "get"
           ),
-          getAxiosInstance('/statistics/advancements', 'get')
+          getAxiosInstance("/statistics/advancements", "get"),
         ]);
-        
+
         setStatistics(statsResponse.data);
         setAdvancement(statsResponse.data.advancement);
         setAllAdvancements(advancementsResponse.data);
       } catch (err) {
-        setError('Failed to load statistics data');
-        console.error('Statistics loading error:', err);
+        setError("Failed to load statistics data");
+        console.error("Statistics loading error:", err);
       } finally {
         setIsLoading(false);
       }
@@ -41,16 +43,19 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
 
   const categorizeAdvancements = (advancements) => {
     return {
-      words: advancements.filter(adv => 
-        adv.includes('word') || adv.includes('Word')
+      words: advancements.filter(
+        (adv) => adv.includes("word") || adv.includes("Word")
       ),
-      cycles: advancements.filter(adv => 
-        adv.includes('cycle') || adv.includes('Cycle')
+      cycles: advancements.filter(
+        (adv) => adv.includes("cycle") || adv.includes("Cycle")
       ),
-      streaks: advancements.filter(adv => 
-        adv.includes('day') || adv.includes('week') || 
-        adv.includes('month') || adv.includes('year')
-      )
+      streaks: advancements.filter(
+        (adv) =>
+          adv.includes("day") ||
+          adv.includes("week") ||
+          adv.includes("month") ||
+          adv.includes("year")
+      ),
     };
   };
 
@@ -86,24 +91,26 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
       </div>
 
       <div className="statistics-cards-grid">
-        <StatisticCard 
-          title="Words Learned" 
-          value={statistics.wordsLearned} 
-          icon={<FaBook />} 
+        <StatisticCard
+          title="Words Learned"
+          value={statistics.wordsLearned}
+          icon={<FaBook />}
           loading={isLoading}
         />
-        <StatisticCard 
-          title="Cycles Completed" 
-          value={statistics.cycles} 
-          icon={<FaSync />} 
+        <StatisticCard
+          title="Cycles Completed"
+          value={statistics.cycles}
+          icon={<FaSync />}
           loading={isLoading}
         />
-        <StatisticCard 
-          title="Day Streak" 
-          value={statistics.dayStreak} 
-          icon={<FaFire />} 
+        <StatisticCard
+          title="Day Streak"
+          value={statistics.dayStreak}
+          icon={<FaFire />}
           loading={isLoading}
         />
+      </div>
+      <div className="level-stats">
         <WordLevelStats words={dictionaryWords} />
       </div>
 
@@ -112,13 +119,13 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
           <h3>Your Achievements</h3>
           <div className="statistics-decorative-line"></div>
         </div>
-        
+
         <div className="statistics-advancements-list">
           {earnedAdvancements.length > 0 ? (
             earnedAdvancements.map((advancement, index) => (
-              <AdvancementBadge 
-                key={`earned-${index}`} 
-                text={advancement} 
+              <AdvancementBadge
+                key={`earned-${index}`}
+                text={advancement}
                 icon={<FaTrophy />}
                 earned={true}
               />
@@ -165,7 +172,7 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
         </div>
 
         <div className="advancement-category">
-          <h4>Streak Milestones</h4>
+          <h4>Day streak Milestones</h4>
           <div className="advancement-category-list">
             {streaks.map((advancement, index) => (
               <AdvancementBadge

@@ -180,6 +180,14 @@ $accent-yellow: #ffc107;
   transform: translateY(-50%);
 }
 
+.advancement-category {
+  h4 {
+    color: $accent-yellow;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
 .statistics-advancements-list,
 .advancement-category-list {
   display: grid;
@@ -303,10 +311,17 @@ $accent-yellow: #ffc107;
   }
 }
 
+.level-stats {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
 .level-stats-container {
   background-color: $dark-gray;
-  padding: 15px;
+  padding: 35px;
   margin: 15px 0;
+  width: 400px;
   border-radius: 8px;
   border: 1px solid #555;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
