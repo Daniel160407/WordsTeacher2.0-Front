@@ -23,6 +23,7 @@ const Login = ({ setLoadLogInForm }) => {
                 Cookies.set('userId', response.data.userId, { expires: 7 });
                 Cookies.set('plan', response.data.plan, { expires: 7 });
                 Cookies.set('languageId', response.data.languageId, { expires: 7 });
+                Cookies.set('languageLevel', 'A1', {expires: 7});
                 setLoadLogInForm(false);
             }
         } catch (error) {

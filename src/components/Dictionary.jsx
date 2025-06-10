@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import SearchBar from "./uiComponents/SearchBar";
 import DictionaryWordList from "./model/DictionaryWordList";
 import getAxiosInstance from "./util/GetAxiosInstance";
-import WordLevelStats from "./uiComponents/WordLevelStates";
 
 const Dictionary = ({ setDictionaryWords, updatedWords, languageId }) => {
   const [words, setWords] = useState([]);
   const [search, setSearch] = useState("");
+  const [expandedWord, setExpandedWord] = useState(null);
 
   useEffect(() => {
     if (languageId !== null && languageId !== undefined) {
@@ -39,13 +39,26 @@ const Dictionary = ({ setDictionaryWords, updatedWords, languageId }) => {
     }
   }, [updatedWords]);
 
+  const toggleExamples = (word) => {
+    if (expandedWord === word) {
+      setExpandedWord(null);
+    } else {
+      setExpandedWord(word);
+    }
+  };
+
   return (
     <div id="dictionary" className="dictionary-container tab-pane fade">
       <SearchBar search={search} setSearch={setSearch} />
       <div className="word-count-label">
         <strong>Words in Dictionary:</strong> {words.length}
       </div>      
-      <DictionaryWordList words={words} search={search} />
+      <DictionaryWordList 
+        words={words} 
+        search={search} 
+        expandedWord={expandedWord}
+        toggleExamples={toggleExamples}
+      />
     </div>
   );
 };

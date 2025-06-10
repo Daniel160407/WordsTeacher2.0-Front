@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { FaEdit, FaTrash, FaEye, FaTimes } from "react-icons/fa";
 import EditWordForm from "../forms/EditWordForm";
 import getAxiosInstance from "../util/GetAxiosInstance";
 
@@ -13,6 +14,7 @@ const WordItem = ({
 }) => {
   const [visibleWord, setVisibleWord] = useState(null);
   const [editWord, setEditWord] = useState(null);
+  const [showExamples, setShowExamples] = useState(false);
   let touchTimeout = null;
 
   const getMarkerColor = () => {
@@ -45,6 +47,7 @@ const WordItem = ({
 
   const handleEdit = () => {
     setEditWord(word.word);
+    setVisibleWord(null);
   };
 
   const handleRemove = async () => {
@@ -67,12 +70,34 @@ const WordItem = ({
     } catch (error) {
       console.error("Error deleting word:", error);
     }
+    setVisibleWord(null);
+  };
+
+  const toggleExamples = () => {
+    setShowExamples(!showExamples);
+    setVisibleWord(null);
+  };
+
+  const renderExamples = () => {
+    if (!word.example) {
+      return <p>No examples available for this word.</p>;
+    }
+    
+    return (
+      <ul className="examples-list">
+        {word.example.split('\n').map((ex, index) => (
+          <li key={index} className="example-item">
+            {ex}
+          </li>
+        ))}
+      </ul>
+    );
   };
 
   return (
     <div
       className="word"
-      style={{ borderLeft: `3px solid ${getMarkerColor()}` }} // Only added line
+      style={{ borderLeft: `3px solid ${getMarkerColor()}` }}
       onContextMenu={handleContextMenu}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -86,27 +111,44 @@ const WordItem = ({
           setUpdatedDictionaryWords={setUpdatedDictionaryWords}
         />
       ) : (
-        <h1>
-          {word.word} - {word.meaning}
-        </h1>
+        <>
+          <h1>
+            {word.word} - {word.meaning}
+          </h1>
+          {showExamples && (
+            <div className="examples-container">
+              <div className="examples-header">
+                <h3>Usage Examples</h3>
+              </div>
+              {renderExamples()}
+              <button 
+                className="close-examples-btn"
+                onClick={() => setShowExamples(false)}
+              >
+                Close
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {visibleWord === word.word && (
-        <div className="editWord">
-          <img
-            className="edit"
-            src="/svg/pencil.svg"
-            alt="edit"
-            onClick={handleEdit}
-          />
-          <img
-            className="remove"
-            src="/svg/trash.svg"
-            alt="remove"
-            onClick={handleRemove}
-          />
+        <div className="context-menu">
+          <div className="menu-item" onClick={handleEdit}>
+            <FaEdit className="icon" />
+            <span>Edit</span>
+          </div>
+          <div className="menu-item" onClick={handleRemove}>
+            <FaTrash className="icon" />
+            <span>Remove</span>
+          </div>
+          <div className="menu-item" onClick={toggleExamples}>
+            <FaEye className="icon" />
+            <span>Examples</span>
+          </div>
         </div>
       )}
+      
       <div>
         <input
           className="checkbox"

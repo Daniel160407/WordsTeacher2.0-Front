@@ -11,6 +11,7 @@ const EditWordForm = ({
 }) => {
   const [editValue, setEditValue] = useState(word.word);
   const [meaningEditValue, setMeaningEditValue] = useState(word.meaning);
+  const [exampleEditValue, setExampleEditValue] = useState(word.example || "");
   const [wordTypeEditValue, setWordTypeEditValue] = useState(word.wordType);
   const [levelEditValue, setLevelEditValue] = useState(word.level);
 
@@ -18,6 +19,7 @@ const EditWordForm = ({
     const changedWord = {
       word: editValue,
       meaning: meaningEditValue,
+      example: exampleEditValue,
       wordType: wordTypeEditValue,
       level: levelEditValue,
       userId: Cookies.get("userId"),
@@ -46,6 +48,7 @@ const EditWordForm = ({
 
       setEditValue("");
       setMeaningEditValue("");
+      setExampleEditValue("");
       setWordTypeEditValue("");
     } catch (error) {
       console.error("Error updating word:", error);
@@ -54,42 +57,77 @@ const EditWordForm = ({
 
   return (
     <div className="editWordContainer">
-      <input
-        type="text"
-        className="edit-input"
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-      />
-      <input
-        type="text"
-        className="edit-input"
-        value={meaningEditValue}
-        onChange={(e) => setMeaningEditValue(e.target.value)}
-      />
-      <select
-        className="editSelect"
-        value={wordTypeEditValue}
-        onChange={(e) => setWordTypeEditValue(e.target.value)}
-      >
-        <option value="word">Words</option>
-        <option value="difficult">Difficult Verbs</option>
-        <option value="redemittel">Redemittel</option>
-      </select>
-      <select
-        className="editSelect"
-        value={levelEditValue}
-        onChange={(e) => setLevelEditValue(e.target.value)}
-      >
-        <option value={"A1"}>A1</option>
-        <option value={"A2"}>A2</option>
-        <option value={"B1"}>B1</option>
-        <option value={"B2"}>B2</option>
-        <option value={"C1"}>C1</option>
-        <option value={"C2"}>C2</option>
-      </select>
-      <button className="save-button btn btn-success" onClick={handleSave}>
-        Save
-      </button>
+      <div className="form-row">
+        <label>Word:</label>
+        <input
+          type="text"
+          className="edit-input"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+        />
+      </div>
+      
+      <div className="form-row">
+        <label>Meaning:</label>
+        <input
+          type="text"
+          className="edit-input"
+          value={meaningEditValue}
+          onChange={(e) => setMeaningEditValue(e.target.value)}
+        />
+      </div>
+      
+      <div className="form-row">
+        <label>Examples:</label>
+        <textarea
+          className="edit-textarea"
+          value={exampleEditValue}
+          onChange={(e) => setExampleEditValue(e.target.value)}
+          placeholder="Enter examples (one per line)"
+          rows="3"
+        />
+      </div>
+      
+      <div className="form-row">
+        <label>Type:</label>
+        <select
+          className="editSelect"
+          value={wordTypeEditValue}
+          onChange={(e) => setWordTypeEditValue(e.target.value)}
+        >
+          <option value="word">Word</option>
+          <option value="difficult">Difficult Verb</option>
+          <option value="redemittel">Redemittel</option>
+        </select>
+      </div>
+      
+      <div className="form-row">
+        <label>Level:</label>
+        <select
+          className="editSelect"
+          value={levelEditValue}
+          onChange={(e) => setLevelEditValue(e.target.value)}
+        >
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+          <option value="B2">B2</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
+        </select>
+      </div>
+      
+      <div className="form-actions">
+        <button className="save-button" onClick={handleSave}>
+          Save
+        </button>
+        <button 
+          className="cancel-button"
+          onClick={() => setEditWord(null)}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

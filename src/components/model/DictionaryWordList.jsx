@@ -1,6 +1,7 @@
 import WordEntry from "./WordEntry";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const DictionaryWordList = ({ words, search }) => {
+const DictionaryWordList = ({ words, search, expandedWord, toggleExamples }) => {
     const groupWordsByFirstLetter = (words) => {
         const articles = ["der", "die", "das"];
         return words.reduce((acc, word) => {
@@ -38,7 +39,12 @@ const DictionaryWordList = ({ words, search }) => {
                     <div key={letter} className="dictionary-section">
                         <h2 className="dictionary-letter">{letter}</h2>
                         {groupedWords[letter].map((word, index) => (
-                            <WordEntry key={word.word + word.meaning + index} word={word} />
+                            <WordEntry 
+                                key={word.word + word.meaning + index} 
+                                word={word} 
+                                isExpanded={expandedWord === word}
+                                toggleExamples={() => toggleExamples(word)}
+                            />
                         ))}
                     </div>
                 ))}

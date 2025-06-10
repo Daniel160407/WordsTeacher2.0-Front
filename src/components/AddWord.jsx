@@ -2,11 +2,13 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import Cookies from "js-cookie";
 import getAxiosInstance from "./util/GetAxiosInstance";
 import "../style/AddWord.scss";
+import AddWordForm from "./forms/AddWordForm";
 
 const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
   const [wordData, setWordData] = useState({
     word: "",
     meaning: "",
+    example: "",
     wordType: "word",
   });
   const [advancement, setAdvancement] = useState(null);
@@ -70,7 +72,12 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
 
       setUpdatedWords(wordsResponse.data);
       setUpdatedDictionaryWords(dictionaryResponse.data.dictionaryDtos);
-      setWordData({ word: "", meaning: "", wordType: wordData.wordType });
+      setWordData({ 
+        word: "", 
+        meaning: "", 
+        example: "",
+        wordType: wordData.wordType 
+      });
 
       if (dictionaryResponse.data.advancement) {
         setAdvancement(dictionaryResponse.data.advancement);
@@ -85,58 +92,14 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
   return (
     <div id="addWords" className="tab-pane fade">
       <h2>Add New Words</h2>
-      <div className="center-box">
-        {advancement && (
-          <div className="advancement-message fade-in">
-            <h3>{advancement}</h3>
-          </div>
-        )}
-        <form id="wordInputForm" onSubmit={addWord}>
-          <h3>Word:</h3>
-          <input
-            name="word"
-            value={wordData.word}
-            onChange={handleChange}
-            type="text"
-            required
-          />
-          <h3>Meaning:</h3>
-          <input
-            name="meaning"
-            value={wordData.meaning}
-            onChange={handleChange}
-            type="text"
-            required
-          />
-
-          <div className="meta-data">
-            <select
-              name="wordType"
-              value={wordData.wordType}
-              onChange={handleChange}
-            >
-              <option value="word">Word</option>
-              <option value="difficult">Difficult Verb</option>
-              <option value="redemittel">Redemittel</option>
-            </select>
-            <select
-              className="level"
-              value={languageLevel}
-              onChange={handleLanguageLevelChange}
-            >
-              <option>A1</option>
-              <option>A2</option>
-              <option>B1</option>
-              <option>B2</option>
-              <option>C1</option>
-              <option>C2</option>
-            </select>
-          </div>
-          <button type="submit" className="btn-warning">
-            Add Word
-          </button>
-        </form>
-      </div>
+      <AddWordForm
+        wordData={wordData}
+        languageLevel={languageLevel}
+        advancement={advancement}
+        handleChange={handleChange}
+        handleLanguageLevelChange={handleLanguageLevelChange}
+        addWord={addWord}
+      />
     </div>
   );
 };

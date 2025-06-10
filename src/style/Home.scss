@@ -80,16 +80,16 @@ h1 {
   }
 
   .word {
+    position: relative;
     background-color: #444;
     border: 1px solid #555;
     border-radius: 4px;
-    padding: 10px 15px;
+    padding: 15px;
     margin-bottom: 10px;
     font-size: 1.2em;
     color: #f9f9f9;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     transition: all 0.2s ease;
     cursor: pointer;
 
@@ -100,6 +100,79 @@ h1 {
 
     h1 {
       font-size: xx-large;
+      margin: 0 0 10px 0;
+      text-align: left;
+      padding-right: 30px;
+    }
+
+    .context-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #333;
+      border: 1px solid #555;
+      border-radius: 4px;
+      z-index: 100;
+      width: 150px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #444;
+        }
+
+        .icon {
+          width: 20px;
+          height: 20px;
+          margin-right: 10px;
+          filter: invert(100%);
+        }
+
+        span {
+          color: #f9f9f9;
+          font-size: 0.9em;
+        }
+      }
+    }
+
+    .examples-container {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #333;
+      border-radius: 4px;
+      border: 1px solid #555;
+
+      .examples-list {
+        padding-left: 20px;
+        margin-bottom: 15px;
+
+        .example-item {
+          color: #f9f9f9;
+          margin-bottom: 8px;
+          line-height: 1.4;
+          font-size: 0.95em;
+        }
+      }
+
+      .close-examples-btn {
+        background-color: #ffc107;
+        color: #000;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #d19d00;
+        }
+      }
     }
 
     .edit-input {
@@ -145,38 +218,111 @@ h1 {
     }
 
     .editWordContainer {
-      left: 70px;
+      display: flex;
+      flex-direction: column;
       gap: 15px;
-      justify-self: end;
-      margin: 10px;
+      width: 100%;
 
-      .save-button {
-        padding: 5px 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #4caf50;
-        color: #fff;
-        font-size: 1em;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
+      .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
 
-        &:hover {
-          background-color: #45a049;
+        label {
+          color: #f9f9f9;
+          font-weight: 500;
+          font-size: 0.9rem;
         }
 
-        &:active {
-          background-color: #39843c;
+        .edit-input {
+          padding: 10px;
+          border: 1px solid #555;
+          border-radius: 4px;
+          background-color: #444;
+          color: #f9f9f9;
+          font-size: 1em;
+
+          &:focus {
+            outline: none;
+            border-color: #ffc107;
+          }
+        }
+
+        .edit-textarea {
+          padding: 10px;
+          border: 1px solid #555;
+          border-radius: 4px;
+          background-color: #444;
+          color: #f9f9f9;
+          font-size: 1em;
+          min-height: 80px;
+          resize: vertical;
+
+          &:focus {
+            outline: none;
+            border-color: #ffc107;
+          }
+        }
+
+        .editSelect {
+          padding: 8px;
+          background-color: #444;
+          color: #f9f9f9;
+          border: 1px solid #555;
+          border-radius: 4px;
+          cursor: pointer;
+
+          &:focus {
+            outline: none;
+            border-color: #ffc107;
+          }
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+
+        .save-button {
+          padding: 8px 15px;
+          background-color: #4caf50;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: #45a049;
+          }
+        }
+
+        .cancel-button {
+          padding: 8px 15px;
+          background-color: #f44336;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background-color: #d32f2f;
+          }
         }
       }
     }
 
     input[type="checkbox"] {
+      position: absolute;
+      top: 15px;
+      right: 15px;
       appearance: none;
       width: 20px;
       height: 20px;
       border: 2px solid #ffc107;
       border-radius: 4px;
-      margin-right: 8px;
       cursor: pointer;
       transition: all 0.3s ease-in-out;
 
@@ -218,6 +364,7 @@ h1 {
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    background-color: #ffc107;
 
     &:hover {
       background-color: #d19d00;

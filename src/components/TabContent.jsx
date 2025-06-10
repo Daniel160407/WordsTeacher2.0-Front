@@ -31,6 +31,7 @@ const TabContent = ({ updatedLanguageWords, languageId }) => {
         "get"
       );
       setUpdatedDictionaryWords(dictionaryResponse.data);
+      setDictionaryWords(dictionaryResponse.data);
       setUpdatedStatistics(statisticsResponse.data);
     };
     fetchData();
