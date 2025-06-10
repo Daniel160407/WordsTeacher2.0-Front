@@ -7,7 +7,7 @@ import "../style/Statistics.scss";
 import { FaBook, FaFire, FaSync, FaTrophy, FaLock } from "react-icons/fa";
 import WordLevelStats from "./uiComponents/WordLevelStates";
 
-const Statistics = ({ dictionaryWords, setAdvancement }) => {
+const Statistics = ({ dictionaryWords, setAdvancement, updatedStatistics }) => {
   const [statistics, setStatistics] = useState(null);
   const [allAdvancements, setAllAdvancements] = useState([]);
   const [error, setError] = useState(null);
@@ -40,6 +40,10 @@ const Statistics = ({ dictionaryWords, setAdvancement }) => {
 
     fetchStatistics();
   }, [setAdvancement]);
+
+  useEffect(() => {
+    if (updatedStatistics) setStatistics(updatedStatistics);
+  }, [updatedStatistics]);
 
   const categorizeAdvancements = (advancements) => {
     return {
