@@ -1,21 +1,12 @@
-import { useRef } from "react";
-
 const WordEntry = ({ word, isExpanded, toggleExamples }) => {
-  const touchTimerRef = useRef(null);
-
   const handleContextMenu = (e) => {
     e.preventDefault();
     toggleExamples();
   };
 
-  const handleTouchStart = () => {
-    touchTimerRef.current = setTimeout(() => {
-      toggleExamples();
-    }, 500);
-  };
-
-  const handleTouchEnd = () => {
-    clearTimeout(touchTimerRef.current);
+  const handleDoubleClick = (e) => {
+    e.preventDefault();
+    toggleExamples();
   };
 
   const renderExamples = () => {
@@ -38,9 +29,7 @@ const WordEntry = ({ word, isExpanded, toggleExamples }) => {
     <div
       className={`dictionary-entry ${isExpanded ? "expanded" : ""}`}
       onContextMenu={handleContextMenu}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
+      onDoubleClick={handleDoubleClick}
     >
       <div className="word-info">
         <div className="dic-word">

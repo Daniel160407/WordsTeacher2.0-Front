@@ -15,7 +15,6 @@ const WordItem = ({
   const [visibleWord, setVisibleWord] = useState(null);
   const [editWord, setEditWord] = useState(null);
   const [showExamples, setShowExamples] = useState(false);
-  let touchTimeout = null;
 
   const getMarkerColor = () => {
     switch (wordType) {
@@ -30,19 +29,17 @@ const WordItem = ({
     }
   };
 
-  const handleContextMenu = (e) => {
-    e.preventDefault();
+  const toggleContextMenu = () => {
     setVisibleWord(word.word === visibleWord ? null : word.word);
   };
 
-  const handleTouchStart = () => {
-    touchTimeout = setTimeout(() => {
-      setVisibleWord(word.word === visibleWord ? null : word.word);
-    }, 500);
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    toggleContextMenu();
   };
 
-  const handleTouchEnd = () => {
-    if (touchTimeout) clearTimeout(touchTimeout);
+  const handleDoubleClick = () => {
+    toggleContextMenu();
   };
 
   const handleEdit = () => {
@@ -82,7 +79,7 @@ const WordItem = ({
     if (!word.example) {
       return <p>No examples available for this word.</p>;
     }
-    
+
     return (
       <ul className="examples-list">
         {word.example.split('\n').map((ex, index) => (
@@ -99,8 +96,7 @@ const WordItem = ({
       className="word"
       style={{ borderLeft: `3px solid ${getMarkerColor()}` }}
       onContextMenu={handleContextMenu}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      onDoubleClick={handleDoubleClick}
     >
       {editWord === word.word ? (
         <EditWordForm
@@ -148,7 +144,7 @@ const WordItem = ({
           </div>
         </div>
       )}
-      
+
       <div>
         <input
           className="checkbox"
