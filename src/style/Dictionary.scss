@@ -35,6 +35,7 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    cursor: pointer;
     
     &.expanded {
         background-color: #3a3a3a;
@@ -62,25 +63,8 @@
     display: flex;
     align-content: center;
     font-size: small;
-    background-color: #555;
-    padding: 3px 10px;
-    border-radius: 12px;
     color: #ffc107;
     font-weight: bold;
-}
-
-.toggle-examples {
-    background: none;
-    border: none;
-    color: #f9f9f9;
-    cursor: pointer;
-    font-size: 1.2rem;
-    margin-left: 10px;
-    transition: color 0.2s ease;
-    
-    &:hover {
-        color: #ffc107;
-    }
 }
 
 .examples-container {
@@ -103,6 +87,7 @@
             margin-bottom: 8px;
             line-height: 1.4;
             font-size: 0.95em;
+            word-break: break-word;
         }
     }
     
@@ -133,4 +118,44 @@
         outline: none;
         box-shadow: 0 0 8px #4a4a6a;
     }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .dictionary-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
+  
+  .dictionary-entry {
+    padding: 12px;
+    
+    .word-info {
+      flex-wrap: wrap;
+    }
+    
+    .dictionary-word, 
+    .dictionary-meaning {
+      font-size: 0.95rem;
+    }
+    
+    .word-level {
+      font-size: 0.8rem;
+      padding: 2px 8px;
+    }
+  }
+  
+  .dictionary-letter {
+    font-size: 1.3rem;
+  }
+  
+  .examples-container {
+    h4 {
+      font-size: 1rem;
+    }
+    
+    .example-item {
+      font-size: 0.9rem;
+    }
+  }
 }

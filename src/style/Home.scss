@@ -101,7 +101,7 @@ h1 {
     h1 {
       font-size: xx-large;
       margin: 0 0 10px 0;
-      text-align: left;
+      text-align: center;
       padding-right: 30px;
     }
 
@@ -329,7 +329,6 @@ h1 {
       &:checked {
         background-color: #ffc107;
         border-color: #ffc107;
-        position: relative;
 
         &::after {
           content: "✔";

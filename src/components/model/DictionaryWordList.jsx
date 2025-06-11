@@ -1,5 +1,4 @@
 import WordEntry from "./WordEntry";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const DictionaryWordList = ({ words, search, expandedWord, toggleExamples }) => {
     const groupWordsByFirstLetter = (words) => {
