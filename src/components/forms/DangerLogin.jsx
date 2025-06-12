@@ -24,7 +24,7 @@ const DangerLogin = ({ setDeletingPermission }) => {
   return (
     <div className="dangerLogin">
       <form id="loginForm" onSubmit={handleLoginSubmit}>
-        <h3>Please enter email and password to delete an account</h3>
+        <h3>Your entire data will be lost, if you are sure with your actions please enter email and password to delete an account</h3>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input

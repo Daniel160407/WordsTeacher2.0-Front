@@ -23,6 +23,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockMessage, setBlockMessage] = useState("");
   const [showTimeUpModal, setShowTimeUpModal] = useState(false);
+  const [secondLanguage, setSecondLanguage] = useState('');
 
   const resultsRef = useRef(null);
   const bottomRef = useRef(null);
@@ -173,6 +174,15 @@ const Tests = ({ updatedWords, newLanguageId }) => {
     }
   }, [updatedWords, language]);
 
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const response = await getAxiosInstance(`/language/languagebyid?id=${Cookies.get('languageId')}&userid=${Cookies.get('userId')}`, 'get');
+      setSecondLanguage(response.data.slice(0, 3).toUpperCase());
+    }
+
+    fetchLanguage();
+  }, []);
+
   const handleInputChange = (e, index) => {
     const { value } = e.target;
     setInputs((prev) => ({ ...prev, [index]: value }));
@@ -226,7 +236,7 @@ const Tests = ({ updatedWords, newLanguageId }) => {
       <div>
         <select onChange={handleChangeLanguage} value={language}>
           <option value="GEO">GEO</option>
-          <option value="DEU">DEU</option>
+          <option value="DEU">{secondLanguage}</option>
         </select>
 
         <select onChange={handleChangeWords} value={wordsList}>
