@@ -60,7 +60,7 @@ const Footer = ({ setUpdatedWords, setLanguageId }) => {
         fetchLanguages={fetchLanguages}
       />
       <DangerZone />
-      {Cookies.get("plan") === "free" && <PricingTable />}
+      {Cookies.get("plan") !== "ultimate" && <PricingTable />}
     </div>
   );
 };

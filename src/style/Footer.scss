@@ -67,6 +67,17 @@ $coupon-hover: #444;
                 }
             }
         }
+
+        &.blocked {
+
+            > *:not(.blocked-overlay) {
+                filter: blur(4px);
+            }
+
+            .blocked-overlay {
+                display: flex;
+            }
+        }
     }
 
     .add-language {

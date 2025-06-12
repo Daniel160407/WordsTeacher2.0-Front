@@ -46,9 +46,6 @@ const Login = ({ setLoadLogInForm }) => {
         try {
             const response = await getAxiosInstance('/login', 'post', { email, password, language });
             if (response.status === 201) {
-                const data = response.data;
-                Cookies.set('languageId', data.id, { expires: 7 });
-                Cookies.set('plan', data.plan, { expires: 7 });
                 setShowRegistration(false);
                 setMessage('Registration successful! Please log in.');
             }

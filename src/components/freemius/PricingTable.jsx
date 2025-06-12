@@ -71,8 +71,10 @@ const PricingTable = () => {
       description: "A great starting point to get acquainted with the Words Teacher Application",
       price: "Free",
       features: [
+        { text: "Free 7 day trial" },
         { text: "Add, remove, edit Words" },
         { text: "Find the words in dictionary" },
+        { text: "Track your progress in statistics tab" },
         { text: "Tests tab | Translation exercises", disabled: true },
         { text: "Ability to add more than one language", disabled: true },
       ],
@@ -81,11 +83,12 @@ const PricingTable = () => {
     {
       title: "Pro Plan",
       plan: "pro",
-      description: "Perfect for professionals and businesses.",
+      description: "Perfect for language learners who want access to translation exercises and manage multiple languages.",
       price: '<span class="capital">$2</span>.99 / month',
       features: [
         { text: "Add, remove, edit Words" },
         { text: "Find the words in dictionary" },
+        { text: "Track your progress in statistics tab" },
         { text: "Tests tab | Translation exercises" },
         { text: "Ability to add more than one language" },
       ],
@@ -99,6 +102,7 @@ const PricingTable = () => {
       features: [
         { text: "Add, remove, edit Words" },
         { text: "Find the words in dictionary" },
+        { text: "Track your progress in statistics tab" },
         { text: "Tests tab | Translation exercises" },
         { text: "Ability to add more than one language" },
       ],

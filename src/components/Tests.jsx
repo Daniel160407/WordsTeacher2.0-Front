@@ -117,9 +117,6 @@ const Tests = ({ updatedWords, newLanguageId }) => {
                 url.map((singleUrl) =>
                   getAxiosInstance(singleUrl, "get")
                     .then((res) => {
-                      if (res?.status !== 403) {
-                        Cookies.set("plan", "ultimate", { expires: 365 });
-                      }
                       return res.data || [];
                     })
                     .catch(handleApiError)

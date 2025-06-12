@@ -65,7 +65,7 @@ const LanguageList = ({
   };
 
   return (
-    <ul className="language-list">
+    <ul className={`language-list ${isBlocked ? 'blocked' : ''}`}>
       {languages.map((language, index) => (
         <li
           key={index}
