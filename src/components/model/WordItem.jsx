@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
-import { FaEdit, FaTrash, FaEye, FaTimes } from "react-icons/fa";
+import { FaEdit, FaTrash, FaEye, FaTimes, FaLightbulb } from "react-icons/fa";
 import EditWordForm from "../forms/EditWordForm";
 import getAxiosInstance from "../util/GetAxiosInstance";
 
@@ -15,6 +15,7 @@ const WordItem = ({
   const [visibleWord, setVisibleWord] = useState(null);
   const [editWord, setEditWord] = useState(null);
   const [showExamples, setShowExamples] = useState(false);
+  let touchTimeout = null;
 
   const getMarkerColor = () => {
     switch (wordType) {
@@ -145,12 +146,15 @@ const WordItem = ({
         </div>
       )}
 
-      <div>
+      <div className="word-controls">
         <input
           className="checkbox"
           type="checkbox"
           ref={(el) => (checkboxesRef.current[word.word] = el)}
         />
+        <button className="bulb-icon" onClick={toggleExamples}>
+          <FaLightbulb />
+        </button>
       </div>
     </div>
   );

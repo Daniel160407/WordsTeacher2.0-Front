@@ -105,6 +105,89 @@ h1 {
       padding-right: 30px;
     }
 
+    .word-controls {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+
+      @media (max-width: 480px) {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+      }
+    }
+
+    .checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffc107;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+      margin: 0;
+      position: relative;
+
+      @media (max-width: 480px) {
+        width: 18px;
+        height: 18px;
+      }
+
+      &:checked {
+        background-color: #ffc107;
+        border-color: #ffc107;
+
+        &::after {
+          content: "✔";
+          font-size: 14px;
+          color: white;
+          font-weight: bold;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          
+          @media (max-width: 480px) {
+            font-size: 12px;
+          }
+        }
+      }
+
+      &:hover {
+        border-color: darken(#ffc107, 10%);
+      }
+    }
+
+    .bulb-icon {
+      background: none;
+      border: none;
+      color: #ffc107;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @media (max-width: 480px) {
+        font-size: 1rem;
+      }
+
+      &:hover {
+        color: #fff;
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+
     .context-menu {
       position: absolute;
       top: 100%;
@@ -311,39 +394,6 @@ h1 {
             background-color: #d32f2f;
           }
         }
-      }
-    }
-
-    input[type="checkbox"] {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ffc107;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-
-      &:checked {
-        background-color: #ffc107;
-        border-color: #ffc107;
-
-        &::after {
-          content: "✔";
-          font-size: 14px;
-          color: white;
-          font-weight: bold;
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
-        }
-      }
-
-      &:hover {
-        border-color: darken(#ffc107, 10%);
       }
     }
   }
