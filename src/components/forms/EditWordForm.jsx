@@ -55,6 +55,17 @@ const EditWordForm = ({
     }
   };
 
+  const handleGenerateExamples = async () => {
+    const prompt = `Generate 3 example sentences in ${word.level}, where the word: ${word.word} is used, one per line, without any extra text`;
+    const response = await getAxiosInstance("/wordsTeacher/genai", "post", {
+      prompt,
+    });
+
+    if (response?.status === 200) {
+      setExampleEditValue(response.data);
+    }
+  };
+
   return (
     <div className="editWordContainer">
       <div className="form-row">
@@ -66,7 +77,7 @@ const EditWordForm = ({
           onChange={(e) => setEditValue(e.target.value)}
         />
       </div>
-      
+
       <div className="form-row">
         <label>Meaning:</label>
         <input
@@ -76,7 +87,7 @@ const EditWordForm = ({
           onChange={(e) => setMeaningEditValue(e.target.value)}
         />
       </div>
-      
+
       <div className="form-row">
         <label>Examples:</label>
         <textarea
@@ -86,8 +97,11 @@ const EditWordForm = ({
           placeholder="Enter examples (one per line)"
           rows="3"
         />
+        <button className="save-button" onClick={handleGenerateExamples}>
+          Generate
+        </button>
       </div>
-      
+
       <div className="form-row">
         <label>Type:</label>
         <select
@@ -100,7 +114,7 @@ const EditWordForm = ({
           <option value="redemittel">Redemittel</option>
         </select>
       </div>
-      
+
       <div className="form-row">
         <label>Level:</label>
         <select
@@ -116,15 +130,12 @@ const EditWordForm = ({
           <option value="C2">C2</option>
         </select>
       </div>
-      
+
       <div className="form-actions">
         <button className="save-button" onClick={handleSave}>
           Save
         </button>
-        <button 
-          className="cancel-button"
-          onClick={() => setEditWord(null)}
-        >
+        <button className="cancel-button" onClick={() => setEditWord(null)}>
           Cancel
         </button>
       </div>

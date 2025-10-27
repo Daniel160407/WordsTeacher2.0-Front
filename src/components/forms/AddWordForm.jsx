@@ -1,4 +1,4 @@
-import React from "react";
+import getAxiosInstance from "../util/GetAxiosInstance";
 
 const AddWordForm = ({
   wordData,
@@ -8,6 +8,19 @@ const AddWordForm = ({
   handleLanguageLevelChange,
   addWord,
 }) => {
+  const handleGenerateExamples = async () => {
+    const prompt = `Generate 3 example sentences in ${languageLevel}, where the word: ${wordData.word} is used, one per line, without any extra text`;
+    const response = await getAxiosInstance("/wordsTeacher/genai", "post", {
+      prompt,
+    });
+
+    if (response?.status === 200) {
+      handleChange({
+        target: { name: "example", value: response.data },
+      });
+    }
+  };
+
   return (
     <div className="center-box">
       {advancement && (
@@ -40,6 +53,9 @@ const AddWordForm = ({
           placeholder="Enter example sentences (separate with new lines)..."
           rows="3"
         />
+        <button className="generate-button" onClick={handleGenerateExamples}>
+          Generate
+        </button>
 
         <div className="meta-data">
           <select
@@ -64,7 +80,7 @@ const AddWordForm = ({
             <option>C2</option>
           </select>
         </div>
-        <button type="submit" className="btn-warning">
+        <button type="submit" className="btn-warning save-button">
           Add Word
         </button>
       </form>
