@@ -13,7 +13,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
   });
   const [advancement, setAdvancement] = useState(null);
   const [languageLevel, setLanguageLevel] = useState(
-    Cookies.get("languageLevel")
+    Cookies.get("languageLevel") || "A1"
   );
 
   const audioRef = useRef(null);
@@ -45,6 +45,7 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
+    console.log(`Updating ${name} to: ${value}`);
     setWordData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
@@ -54,15 +55,19 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
     Cookies.set("languageLevel", newLevel, { expires: 7 });
   }, []);
 
-  const addWord = async (event) => {
+  const addWord = async (event, directWordData = null) => {
     event.preventDefault();
 
+    const wordToSave = directWordData || wordData;
+    
     const newWord = {
-      ...wordData,
+      ...wordToSave,
       level: languageLevel,
       userId: Cookies.get("userId"),
       languageId: Cookies.get("languageId"),
     };
+    
+    console.log("Submitting word:", newWord);
 
     try {
       const [wordsResponse, dictionaryResponse] = await Promise.all([
@@ -72,12 +77,22 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
 
       setUpdatedWords(wordsResponse.data);
       setUpdatedDictionaryWords(dictionaryResponse.data.dictionaryDtos);
-      setWordData({ 
-        word: "", 
-        meaning: "", 
-        example: "",
-        wordType: wordData.wordType 
-      });
+      
+      if (!directWordData) {
+        setWordData({
+          word: "",
+          meaning: "",
+          example: "",
+          wordType: wordData.wordType,
+        });
+      } else {
+        setWordData(prev => ({
+          word: "",
+          meaning: "",
+          example: "",
+          wordType: prev.wordType,
+        }));
+      }
 
       if (dictionaryResponse.data.advancement) {
         setAdvancement(dictionaryResponse.data.advancement);
@@ -85,7 +100,10 @@ const AddWord = ({ setUpdatedWords, setUpdatedDictionaryWords }) => {
         setTimeout(() => setAdvancement(null), 5000);
       }
     } catch (error) {
-      console.error("Error adding word:", error.response?.data || error.message);
+      console.error(
+        "Error adding word:",
+        error.response?.data || error.message
+      );
     }
   };
 
